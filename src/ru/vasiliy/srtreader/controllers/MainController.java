@@ -1,19 +1,27 @@
 package ru.vasiliy.srtreader.controllers;
 
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import ru.vasiliy.srtreader.interfaces.CollectionSrtFiles;
 import ru.vasiliy.srtreader.objects.SrtFile;
+import javafx.scene.control.TableColumn.CellEditEvent;
 
 import java.io.*;
 
 public class MainController {
+    @FXML
+    private TextField txtFilter;
     @FXML
     private TableView tbvTable;
     @FXML
@@ -34,7 +42,74 @@ public class MainController {
         tbcIndex.setCellValueFactory(new PropertyValueFactory<SrtFile,String>("count"));
         tbcTimeLine.setCellValueFactory(new PropertyValueFactory<SrtFile,String>("timeLine"));
         tbcSrtText.setCellValueFactory(new PropertyValueFactory<SrtFile,String>("srtText"));
-        tbvTable.setItems(collectionSrtFiles.getSrtList());
+
+        FilteredList<SrtFile> filteredData = new FilteredList<>(collectionSrtFiles.getSrtList(), p -> true);
+
+        txtFilter.textProperty().addListener((observable, oldValue, newValue) -> {
+            filteredData.setPredicate(srtFile -> {
+
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+
+
+                String lowerCaseFilter = newValue.toLowerCase();
+
+                if (srtFile.getCount().toLowerCase().indexOf(lowerCaseFilter) != -1) {
+                    return true; // Filter matches first name.
+                } else if (srtFile.getTimeLine().toLowerCase().indexOf(lowerCaseFilter) != -1) {
+                    return true; // Filter matches last name.
+                } else if (srtFile.getSrtText().toLowerCase().indexOf(lowerCaseFilter) != -1) {
+                    return true; // Filter matches last name.
+                }
+                return false; // Does not match.
+            });
+        });
+
+        SortedList<SrtFile> sortedData = new SortedList<>(filteredData);
+        sortedData.comparatorProperty().bind(tbvTable.comparatorProperty());
+        tbvTable.setItems(sortedData);
+
+      //  tbvTable.setItems(collectionSrtFiles.getSrtList());
+
+        tbcIndex.setCellFactory(TextFieldTableCell.forTableColumn());
+
+        tbcIndex.setOnEditCommit(
+                new EventHandler<CellEditEvent<SrtFile, String>>() {
+                    @Override
+                    public void handle(CellEditEvent<SrtFile, String> t) {
+                        ((SrtFile) t.getTableView().getItems().get(
+                                t.getTablePosition().getRow())
+                        ).setCount(t.getNewValue());
+                    }
+                }
+        );
+
+        tbcTimeLine.setCellFactory(TextFieldTableCell.forTableColumn());
+
+        tbcTimeLine.setOnEditCommit(
+                new EventHandler<CellEditEvent<SrtFile, String>>() {
+                    @Override
+                    public void handle(CellEditEvent<SrtFile, String> t) {
+                        ((SrtFile) t.getTableView().getItems().get(
+                                t.getTablePosition().getRow())
+                        ).setTimeLine(t.getNewValue());
+                    }
+                }
+        );
+
+        tbcSrtText.setCellFactory(TextFieldTableCell.forTableColumn());
+
+        tbcSrtText.setOnEditCommit(
+                new EventHandler<CellEditEvent<SrtFile, String>>() {
+                    @Override
+                    public void handle(CellEditEvent<SrtFile, String> t) {
+                        ((SrtFile) t.getTableView().getItems().get(
+                                t.getTablePosition().getRow())
+                        ).setSrtText(t.getNewValue());
+                    }
+                }
+        );
 
     }
 

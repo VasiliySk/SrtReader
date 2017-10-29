@@ -16,8 +16,20 @@ public class SrtFile {
     private SimpleStringProperty  timeLine= new SimpleStringProperty("");;
     private SimpleStringProperty srtText= new SimpleStringProperty("");;
 
-    public SimpleStringProperty getCount() {
+    /*public SimpleStringProperty getCount() {
         return count;
+    }*/
+
+    public String getCount() {
+        return count.get();
+    }
+
+    public String getTimeLine() {
+        return timeLine.get();
+    }
+
+    public String getSrtText() {
+        return srtText.get();
     }
 
     public void setCount(SimpleStringProperty count) {
@@ -28,9 +40,9 @@ public class SrtFile {
         this.count.set(count);
     }
 
-    public SimpleStringProperty getTimeLine() {
+   /* public SimpleStringProperty getTimeLine() {
         return timeLine;
-    }
+    }*/
 
     public void setTimeLine(SimpleStringProperty timeLine) {
         this.timeLine = timeLine;
@@ -40,13 +52,10 @@ public class SrtFile {
         this.timeLine.set(timeLine);
     }
 
-    public SimpleStringProperty getSrtText() {
-        return srtText;
-    }
-
+    /*
     public void setSrtText(SimpleStringProperty srtText) {
         this.srtText = srtText;
-    }
+    }*/
 
     public void setSrtText(String srtText) {
         this.srtText.set(srtText);
