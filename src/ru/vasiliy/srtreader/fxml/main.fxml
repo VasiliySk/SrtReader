@@ -18,6 +18,8 @@
           <Menu mnemonicParsing="false" text="Файл">
             <items>
               <MenuItem fx:id="menuOpen" mnemonicParsing="false" onAction="#openFile" text="Открыть Srt файл" />
+                  <MenuItem fx:id="menuTxtOpen" mnemonicParsing="false" onAction="#openTxtFile" text="Открыть текст" />
+                  <MenuItem fx:id="menuTxtTest" mnemonicParsing="false" onAction="#openTest" text="Тест" />
                   <MenuItem fx:id="menuClose" mnemonicParsing="false" onAction="#actionClose" text="Закрыть" />
             </items>
           </Menu>

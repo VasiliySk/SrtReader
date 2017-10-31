@@ -25,13 +25,18 @@ public class MainController {
     @FXML
     private TableView tbvTable;
     @FXML
-    private TableColumn tbcIndex;
+    private TableColumn<SrtFile,String>tbcIndex;
     @FXML
-    private TableColumn tbcTimeLine;
+    private TableColumn<SrtFile,String> tbcTimeLine;
     @FXML
-    private TableColumn tbcSrtText;
+    private TableColumn<SrtFile,String> tbcSrtText;
 
     private CollectionSrtFiles collectionSrtFiles = new CollectionSrtFiles();
+
+    private String result;
+
+    private String[] originalText;
+    private String[] editText;
 
     @FXML
     private MenuBar menuFile;
@@ -120,7 +125,7 @@ public class MainController {
 
     public void openFile(ActionEvent actionEvent) {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Open Resource File");
+        fileChooser.setTitle("Open SRT File");
         Stage stage = (Stage) menuFile.getScene().getWindow();
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("SRT Files", "*.srt") );
         File file = fileChooser.showOpenDialog(stage);
@@ -163,5 +168,100 @@ public class MainController {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void openTxtFile(ActionEvent actionEvent) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Txt File");
+        Stage stage = (Stage) menuFile.getScene().getWindow();
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("SRT Files", "*.txt") );
+        File file = fileChooser.showOpenDialog(stage);
+        StringBuilder stringBuilder = new StringBuilder();
+        if(file!=null){
+            try {
+                FileReader fr = new FileReader(file);
+                //создаем BufferedReader с существующего FileReader для построчного считывания
+                BufferedReader reader = new BufferedReader(fr);
+                // считаем сначала первую строку
+                String line = reader.readLine();
+                String lineExt = line +" ";
+                stringBuilder.append(lineExt);
+                while (line != null) {
+                    // считываем остальные строки в цикле
+                    System.out.println(lineExt);
+                    line = reader.readLine();
+                    lineExt = line+ " ";
+                    stringBuilder.append(lineExt);
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+        result = stringBuilder.toString();
+
+        //Удаляем лищние пробелы
+        while(result.contains("  ")) {
+            String replace = result.replace("  ", " ");
+            result=replace;
+        }
+        //Создаем массив из слов без знаком пунктуации
+        editText = new String[result.split(" ").length];
+        int i =0;
+        for (String retval : result.split(" ")) {
+            editText[i]=delNoDigOrLet(retval);
+            i=i+1;
+        }
+
+
+        for(int j=0; j<7;j++){
+            System.out.println(editText[j]);
+        }
+
+        //Создаем массив из слов со знаками пунктуации
+        originalText =  new String[result.split(" ").length];
+        int k =0;
+        for (String retval : result.split(" ")) {
+            originalText[k]=retval;
+            k=k+1;
+        }
+
+        for(int j=0; j<7;j++){
+            System.out.println(originalText[j]);
+        }
+
+    }
+
+    private static String delNoDigOrLet (String s) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < s.length(); i++) {
+            if (Character .isLetterOrDigit(s.charAt(i)))
+                sb.append(s.charAt(i));
+        }
+        return sb.toString();
+    }
+
+    public void openTest(ActionEvent actionEvent) {
+        boolean check =false;
+        System.out.println(collectionSrtFiles.getSrtList().get(0).getSrtText());
+        System.out.println(collectionSrtFiles.getSrtList().get(0).getSrtText().split(" ").length);
+        String[] srt = collectionSrtFiles.getSrtList().get(0).getSrtText().split(" ");
+        for(int i=0;i<editText.length;i++){
+           if(srt[0].equals(editText[i])){
+               check=true;
+               for (int k=0;k<srt.length;k++){
+                   if(srt[0+k].equals(editText[i+k])){
+                       check=true;
+                   }else {
+                       check=false;
+                       return;
+                   }
+               }
+           }
+        }
+        System.out.println(check);
     }
 }
