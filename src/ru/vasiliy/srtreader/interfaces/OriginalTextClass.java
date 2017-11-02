@@ -85,27 +85,42 @@ public class OriginalTextClass {
         this.cltStrFiles = cltStrFiles;
     }
 
-    public void checkText(){
+    public String checkText(int count){
         ArrayList<Boolean> bools= new ArrayList<>();
-        String[] srt = cltStrFiles.getSrtList().get(0).getSrtText().split(" ");
+        String[] srt = cltStrFiles.getSrtList().get(count).getSrtText().split(" ");
+        String result="";
         for(int i=0;i<editText.length;i++){
-            if(srt[0].equals(editText[i])){
+            if(srt[0].equalsIgnoreCase(editText[i])){
                 for (int k=0;k<srt.length;k++){
-                    if(srt[0+k].equals(editText[i+k])){
+                    if(srt[0+k].equalsIgnoreCase(editText[i+k])){
                         bools.add(true);
-                        System.out.println(srt[0+k]);
+                        if(result.equals("")) {
+                            result = originalText[i + k];
+                        }else{
+                            result = result + " " + originalText[i + k];
+                        }
                     }else {
                         bools.add(false);
-                        System.out.println(srt[0+k]);
                     }
                 }
-            for (int m=0;m<bools.size();m++){
-                System.out.println(bools.get(m));
-            }
-            return;
+            if(checkResult(bools)){
+                bools.clear();
+                return result;
+                }
+            bools.clear();
+            result="";
             }
         }
+        bools.clear();
+        return "false";
+    }
 
-
+    private boolean checkResult(ArrayList<Boolean> bools){
+        for(int i=0; i<bools.size();i++){
+            if (bools.get(i)==false){
+                return false;
+            }
+        }
+        return true;
     }
 }

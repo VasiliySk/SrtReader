@@ -22,6 +22,8 @@ import java.io.*;
 
 public class MainController {
     @FXML
+    private TableColumn tbcOrigText;
+    @FXML
     private TextField txtFilter;
     @FXML
     private TableView tbvTable;
@@ -50,6 +52,7 @@ public class MainController {
         tbcIndex.setCellValueFactory(new PropertyValueFactory<SrtFile,String>("count"));
         tbcTimeLine.setCellValueFactory(new PropertyValueFactory<SrtFile,String>("timeLine"));
         tbcSrtText.setCellValueFactory(new PropertyValueFactory<SrtFile,String>("srtText"));
+        tbcOrigText.setCellValueFactory(new PropertyValueFactory<SrtFile,String>("origText"));
 
         FilteredList<SrtFile> filteredData = new FilteredList<>(collectionSrtFiles.getSrtList(), p -> true);
 
@@ -69,7 +72,9 @@ public class MainController {
                     return true; // Filter matches last name.
                 } else if (srtFile.getSrtText().toLowerCase().indexOf(lowerCaseFilter) != -1) {
                     return true; // Filter matches last name.
-                }
+                } else if (srtFile.getOrigText().toLowerCase().indexOf(lowerCaseFilter) != -1) {
+                return true; // Filter matches last name.
+            }
                 return false; // Does not match.
             });
         });
@@ -78,7 +83,7 @@ public class MainController {
         sortedData.comparatorProperty().bind(tbvTable.comparatorProperty());
         tbvTable.setItems(sortedData);
 
-      //  tbvTable.setItems(collectionSrtFiles.getSrtList());
+        //tbvTable.setItems(collectionSrtFiles.getSrtList());
 
         tbcIndex.setCellFactory(TextFieldTableCell.forTableColumn());
 
@@ -154,7 +159,7 @@ public class MainController {
                             break;
                         case 2:
                             srtLines[2]=line;
-                            SrtFile srtFile = new SrtFile(srtLines[0],srtLines[1],srtLines[2]);
+                            SrtFile srtFile = new SrtFile(srtLines[0],srtLines[1],srtLines[2],"");
                             collectionSrtFiles.add(srtFile);
                             count = count + 1;
                             break;
@@ -177,7 +182,7 @@ public class MainController {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Txt File");
         Stage stage = (Stage) menuFile.getScene().getWindow();
-        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("SRT Files", "*.txt") );
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("TXT Files", "*.txt") );
         File file = fileChooser.showOpenDialog(stage);
         originalTextClass.setCltStrFiles(collectionSrtFiles);
         originalTextClass.openTxtFile(file);
@@ -192,6 +197,14 @@ public class MainController {
     }
 
     public void openTest(ActionEvent actionEvent) {
-        originalTextClass.checkText();
+        for(int i=0;i<collectionSrtFiles.getSrtList().size();i++) {
+            SrtFile tmpSrtFile = new SrtFile();
+            tmpSrtFile.setCount(collectionSrtFiles.getSrtList().get(i).getCount());
+            tmpSrtFile.setTimeLine(collectionSrtFiles.getSrtList().get(i).getTimeLine());
+            tmpSrtFile.setSrtText(collectionSrtFiles.getSrtList().get(i).getSrtText());
+            tmpSrtFile.setOrigText(originalTextClass.checkText(i));
+            collectionSrtFiles.getSrtList().set(i,tmpSrtFile);
+            System.out.println(originalTextClass.checkText(i));
+        }
     }
 }

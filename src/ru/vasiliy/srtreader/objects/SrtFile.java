@@ -6,19 +6,17 @@ public class SrtFile {
 
     public SrtFile(){}
 
-    public SrtFile(String count, String timeLine, String srtText){
+    public SrtFile(String count, String timeLine, String srtText, String origText){
         this.count = new SimpleStringProperty(count);
         this.timeLine = new SimpleStringProperty(timeLine);
         this.srtText = new SimpleStringProperty(srtText);
+        this.origText=new SimpleStringProperty(origText);
     }
 
     private SimpleStringProperty count = new SimpleStringProperty("");
-    private SimpleStringProperty  timeLine= new SimpleStringProperty("");;
-    private SimpleStringProperty srtText= new SimpleStringProperty("");;
-
-    /*public SimpleStringProperty getCount() {
-        return count;
-    }*/
+    private SimpleStringProperty  timeLine= new SimpleStringProperty("");
+    private SimpleStringProperty srtText= new SimpleStringProperty("");
+    private SimpleStringProperty origText = new SimpleStringProperty("");
 
     public String getCount() {
         return count.get();
@@ -32,6 +30,8 @@ public class SrtFile {
         return srtText.get();
     }
 
+    public String getOrigText(){return origText.get();}
+
     public void setCount(SimpleStringProperty count) {
         this.count = count;
     }
@@ -39,10 +39,6 @@ public class SrtFile {
     public void setCount(String count) {
         this.count.set(count);
     }
-
-   /* public SimpleStringProperty getTimeLine() {
-        return timeLine;
-    }*/
 
     public void setTimeLine(SimpleStringProperty timeLine) {
         this.timeLine = timeLine;
@@ -52,14 +48,11 @@ public class SrtFile {
         this.timeLine.set(timeLine);
     }
 
-    /*
-    public void setSrtText(SimpleStringProperty srtText) {
-        this.srtText = srtText;
-    }*/
-
     public void setSrtText(String srtText) {
         this.srtText.set(srtText);
     }
+
+    public void setOrigText(String origText){this.origText.set(origText);}
 
     public SimpleStringProperty countProperty() {
         return count;
@@ -72,5 +65,7 @@ public class SrtFile {
     public SimpleStringProperty srtTextProperty() {
         return srtText;
     }
+
+    public SimpleStringProperty origTextProperty(){return origText;}
 
 }
