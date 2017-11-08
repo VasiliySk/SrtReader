@@ -6,17 +6,19 @@ public class SrtFile {
 
     public SrtFile(){}
 
-    public SrtFile(String count, String timeLine, String srtText, String origText){
+    public SrtFile(String count, String timeLine, String srtText, String origText, String checkText){
         this.count = new SimpleStringProperty(count);
         this.timeLine = new SimpleStringProperty(timeLine);
         this.srtText = new SimpleStringProperty(srtText);
         this.origText=new SimpleStringProperty(origText);
+        this.checkText=new SimpleStringProperty(checkText);
     }
 
     private SimpleStringProperty count = new SimpleStringProperty("");
     private SimpleStringProperty  timeLine= new SimpleStringProperty("");
     private SimpleStringProperty srtText= new SimpleStringProperty("");
     private SimpleStringProperty origText = new SimpleStringProperty("");
+    private SimpleStringProperty checkText = new SimpleStringProperty("");
 
     public String getCount() {
         return count.get();
@@ -31,6 +33,8 @@ public class SrtFile {
     }
 
     public String getOrigText(){return origText.get();}
+
+    public String getCheckText(){return checkText.get();}
 
     public void setCount(SimpleStringProperty count) {
         this.count = count;
@@ -54,6 +58,8 @@ public class SrtFile {
 
     public void setOrigText(String origText){this.origText.set(origText);}
 
+    public void setCheckText(String checkText){this.checkText.set(checkText);}
+
     public SimpleStringProperty countProperty() {
         return count;
     }
@@ -67,5 +73,7 @@ public class SrtFile {
     }
 
     public SimpleStringProperty origTextProperty(){return origText;}
+
+    public SimpleStringProperty checkTextProperty(){return checkText;}
 
 }

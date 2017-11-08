@@ -92,16 +92,18 @@ public class OriginalTextClass {
         for(int i=0;i<editText.length;i++){
             if(srt[0].equalsIgnoreCase(editText[i])){
                 for (int k=0;k<srt.length;k++){
-                    if(srt[0+k].equalsIgnoreCase(editText[i+k])){
-                        bools.add(true);
-                        if(result.equals("")) {
-                            result = originalText[i + k];
-                        }else{
-                            result = result + " " + originalText[i + k];
+                    if ((i + k)<editText.length) {
+                        if (srt[k].equalsIgnoreCase(editText[i + k])) {
+                            bools.add(true);
+                            if (result.equals("")) {
+                                result = originalText[i + k];
+                            } else {
+                                result = result + " " + originalText[i + k];
+                            }
+                        } else {
+                            bools.add(false);
                         }
-                    }else {
-                        bools.add(false);
-                    }
+                    }else{bools.add(false);}
                 }
             if(checkResult(bools)){
                 bools.clear();
@@ -112,12 +114,12 @@ public class OriginalTextClass {
             }
         }
         bools.clear();
-        return "false";
+        return "QWERTY";
     }
 
     private boolean checkResult(ArrayList<Boolean> bools){
         for(int i=0; i<bools.size();i++){
-            if (bools.get(i)==false){
+            if (!bools.get(i)){
                 return false;
             }
         }

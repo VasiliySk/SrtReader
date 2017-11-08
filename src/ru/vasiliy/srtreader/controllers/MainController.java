@@ -16,23 +16,24 @@ import javafx.stage.Stage;
 import ru.vasiliy.srtreader.interfaces.CollectionSrtFiles;
 import ru.vasiliy.srtreader.interfaces.OriginalTextClass;
 import ru.vasiliy.srtreader.objects.SrtFile;
-import javafx.scene.control.TableColumn.CellEditEvent;
 
 import java.io.*;
 
 public class MainController {
     @FXML
-    private TableColumn tbcOrigText;
-    @FXML
     private TextField txtFilter;
     @FXML
-    private TableView tbvTable;
+    private TableView<SrtFile> tbvTable;
     @FXML
     private TableColumn<SrtFile,String>tbcIndex;
     @FXML
     private TableColumn<SrtFile,String> tbcTimeLine;
     @FXML
     private TableColumn<SrtFile,String> tbcSrtText;
+    @FXML
+    private TableColumn<SrtFile,String> tbcOrigText;
+    @FXML
+    public TableColumn <SrtFile,String>tbcCheckText;
 
     private CollectionSrtFiles collectionSrtFiles = new CollectionSrtFiles();
 
@@ -53,6 +54,7 @@ public class MainController {
         tbcTimeLine.setCellValueFactory(new PropertyValueFactory<SrtFile,String>("timeLine"));
         tbcSrtText.setCellValueFactory(new PropertyValueFactory<SrtFile,String>("srtText"));
         tbcOrigText.setCellValueFactory(new PropertyValueFactory<SrtFile,String>("origText"));
+        tbcCheckText.setCellValueFactory(new PropertyValueFactory<SrtFile,String>("checkText"));
 
         FilteredList<SrtFile> filteredData = new FilteredList<>(collectionSrtFiles.getSrtList(), p -> true);
 
@@ -74,7 +76,9 @@ public class MainController {
                     return true; // Filter matches last name.
                 } else if (srtFile.getOrigText().toLowerCase().indexOf(lowerCaseFilter) != -1) {
                 return true; // Filter matches last name.
-            }
+                }else if (srtFile.getCheckText().toLowerCase().indexOf(lowerCaseFilter) != -1) {
+                    return true; // Filter matches last name.
+                }
                 return false; // Does not match.
             });
         });
@@ -88,40 +92,29 @@ public class MainController {
         tbcIndex.setCellFactory(TextFieldTableCell.forTableColumn());
 
         tbcIndex.setOnEditCommit(
-                new EventHandler<CellEditEvent<SrtFile, String>>() {
-                    @Override
-                    public void handle(CellEditEvent<SrtFile, String> t) {
-                        ((SrtFile) t.getTableView().getItems().get(
-                                t.getTablePosition().getRow())
-                        ).setCount(t.getNewValue());
-                    }
-                }
+                t -> t.getTableView().getItems().get(
+                        t.getTablePosition().getRow()).setCount(t.getNewValue())
         );
 
         tbcTimeLine.setCellFactory(TextFieldTableCell.forTableColumn());
 
         tbcTimeLine.setOnEditCommit(
-                new EventHandler<CellEditEvent<SrtFile, String>>() {
-                    @Override
-                    public void handle(CellEditEvent<SrtFile, String> t) {
-                        ((SrtFile) t.getTableView().getItems().get(
-                                t.getTablePosition().getRow())
-                        ).setTimeLine(t.getNewValue());
-                    }
-                }
+                t -> t.getTableView().getItems().get(
+                        t.getTablePosition().getRow()).setTimeLine(t.getNewValue())
         );
 
         tbcSrtText.setCellFactory(TextFieldTableCell.forTableColumn());
 
         tbcSrtText.setOnEditCommit(
-                new EventHandler<CellEditEvent<SrtFile, String>>() {
-                    @Override
-                    public void handle(CellEditEvent<SrtFile, String> t) {
-                        ((SrtFile) t.getTableView().getItems().get(
-                                t.getTablePosition().getRow())
-                        ).setSrtText(t.getNewValue());
-                    }
-                }
+                t -> t.getTableView().getItems().get(
+                        t.getTablePosition().getRow()).setSrtText(t.getNewValue())
+        );
+
+        tbcOrigText.setCellFactory(TextFieldTableCell.forTableColumn());
+
+        tbcOrigText.setOnEditCommit(
+                t -> t.getTableView().getItems().get(
+                        t.getTablePosition().getRow()).setOrigText(t.getNewValue())
         );
 
     }
@@ -134,6 +127,7 @@ public class MainController {
     public void openFile(ActionEvent actionEvent) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open SRT File");
+        fileChooser.setInitialDirectory(new File("D:\\Java\\Audiobooks"));
         Stage stage = (Stage) menuFile.getScene().getWindow();
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("SRT Files", "*.srt") );
         File file = fileChooser.showOpenDialog(stage);
@@ -159,7 +153,7 @@ public class MainController {
                             break;
                         case 2:
                             srtLines[2]=line;
-                            SrtFile srtFile = new SrtFile(srtLines[0],srtLines[1],srtLines[2],"");
+                            SrtFile srtFile = new SrtFile(srtLines[0],srtLines[1],srtLines[2],"","");
                             collectionSrtFiles.add(srtFile);
                             count = count + 1;
                             break;
@@ -181,6 +175,7 @@ public class MainController {
     public void openTxtFile(ActionEvent actionEvent) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Txt File");
+        fileChooser.setInitialDirectory(new File("D:\\Java\\Audiobooks"));
         Stage stage = (Stage) menuFile.getScene().getWindow();
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("TXT Files", "*.txt") );
         File file = fileChooser.showOpenDialog(stage);
@@ -203,6 +198,11 @@ public class MainController {
             tmpSrtFile.setTimeLine(collectionSrtFiles.getSrtList().get(i).getTimeLine());
             tmpSrtFile.setSrtText(collectionSrtFiles.getSrtList().get(i).getSrtText());
             tmpSrtFile.setOrigText(originalTextClass.checkText(i));
+            if (tmpSrtFile.getOrigText().equals("QWERTY")) {
+                tmpSrtFile.setCheckText("!false");
+            }else {
+                tmpSrtFile.setCheckText("!true");
+            }
             collectionSrtFiles.getSrtList().set(i,tmpSrtFile);
             System.out.println(originalTextClass.checkText(i));
         }
