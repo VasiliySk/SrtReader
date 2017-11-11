@@ -7,11 +7,13 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.vasiliy.srtreader.controllers.MainController">
+<VBox xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.vasiliy.srtreader.controllers.MainController">
    <children>
       <MenuBar fx:id="menuFile">
         <menus>
@@ -23,43 +25,68 @@
                   <MenuItem fx:id="menuClose" mnemonicParsing="false" onAction="#actionClose" text="Закрыть" />
             </items>
           </Menu>
+            <Menu mnemonicParsing="false" text="Всякое">
+               <items>
+                  <MenuItem fx:id="menuTxtTemp" mnemonicParsing="false" onAction="#actionTemp" text="Загрузка текста" />
+               </items>
+            </Menu>
         </menus>
       </MenuBar>
-      <AnchorPane maxHeight="30.0" prefHeight="30.0" prefWidth="200.0">
-         <VBox.margin>
-            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-         </VBox.margin>
+      <HBox VBox.vgrow="ALWAYS">
          <children>
-            <Label text="Фильтр: " AnchorPane.leftAnchor="0.0">
-               <padding>
+            <AnchorPane HBox.hgrow="ALWAYS">
+               <children>
+                  <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <AnchorPane maxHeight="30.0" prefHeight="30.0" prefWidth="200.0">
+                           <VBox.margin>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </VBox.margin>
+                           <children>
+                              <Label text="Фильтр: " AnchorPane.leftAnchor="0.0">
+                                 <padding>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </padding>
+                              </Label>
+                              <TextField fx:id="txtFilter" AnchorPane.leftAnchor="70.0" AnchorPane.rightAnchor="0.0">
+                                 <padding>
+                                    <Insets bottom="10.0" left="10.0" top="10.0" />
+                                 </padding>
+                              </TextField>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                           <children>
+                              <TableView fx:id="tbvTable" editable="true" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                <columns>
+                                  <TableColumn fx:id="tbcIndex" maxWidth="75.0" minWidth="55.0" prefWidth="75.0" text="Индекс" />
+                                  <TableColumn fx:id="tbcTimeLine" maxWidth="400.0" minWidth="200.0" prefWidth="300.0" text="TimeLine" />
+                                    <TableColumn fx:id="tbcSrtText" prefWidth="75.0" text="Srt Текст" />
+                                    <TableColumn fx:id="tbcOrigText" prefWidth="75.0" text="Оригинальный текст" />
+                                    <TableColumn fx:id="tbcCheckText" maxWidth="75.0" minWidth="55.0" prefWidth="75.0" text="Check" />
+                                </columns>
+                                 <columnResizePolicy>
+                                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                 </columnResizePolicy>
+                              </TableView>
+                           </children>
+                           <VBox.margin>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </VBox.margin>
+                        </AnchorPane>
+                     </children>
+                  </VBox>
+               </children>
+            </AnchorPane>
+            <AnchorPane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <TextArea fx:id="textAreaOrig" prefHeight="200.0" prefWidth="200.0" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children>
+               <HBox.margin>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-               </padding>
-            </Label>
-            <TextField fx:id="txtFilter" AnchorPane.leftAnchor="70.0" AnchorPane.rightAnchor="10.0">
-               <padding>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-               </padding>
-            </TextField>
+               </HBox.margin>
+            </AnchorPane>
          </children>
-      </AnchorPane>
-      <AnchorPane prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
-         <children>
-            <TableView fx:id="tbvTable" editable="true" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-              <columns>
-                <TableColumn fx:id="tbcIndex" maxWidth="75.0" minWidth="55.0" prefWidth="75.0" text="Индекс" />
-                <TableColumn fx:id="tbcTimeLine" maxWidth="400.0" minWidth="200.0" prefWidth="300.0" text="TimeLine" />
-                  <TableColumn fx:id="tbcSrtText" prefWidth="75.0" text="Srt Текст" />
-                  <TableColumn fx:id="tbcOrigText" prefWidth="75.0" text="Оригинальный текст" />
-                  <TableColumn fx:id="tbcCheckText" maxWidth="75.0" minWidth="55.0" prefWidth="75.0" text="Check" />
-              </columns>
-               <columnResizePolicy>
-                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-               </columnResizePolicy>
-            </TableView>
-         </children>
-         <VBox.margin>
-            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-         </VBox.margin>
-      </AnchorPane>
+      </HBox>
    </children>
 </VBox>

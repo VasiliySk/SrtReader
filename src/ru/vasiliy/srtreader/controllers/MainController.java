@@ -5,10 +5,7 @@ import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.FileChooser;
@@ -20,6 +17,10 @@ import ru.vasiliy.srtreader.objects.SrtFile;
 import java.io.*;
 
 public class MainController {
+    @FXML
+    private TextArea textAreaOrig;
+    @FXML
+    private MenuItem menuTxtTemp;
     @FXML
     private TextField txtFilter;
     @FXML
@@ -181,6 +182,7 @@ public class MainController {
         File file = fileChooser.showOpenDialog(stage);
         originalTextClass.setCltStrFiles(collectionSrtFiles);
         originalTextClass.openTxtFile(file);
+        textAreaOrig.setText(originalTextClass.getStringBuilderWithLineBreak().toString());
 
         result = originalTextClass.toString();
 
@@ -206,5 +208,14 @@ public class MainController {
             collectionSrtFiles.getSrtList().set(i,tmpSrtFile);
             System.out.println(originalTextClass.checkText(i));
         }
+    }
+
+    public void actionTemp(ActionEvent actionEvent) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Перваая строка"+"\n");
+        stringBuilder.append("Вторая строка"+"\n");
+        stringBuilder.append("Третья строка"+"\n");
+        textAreaOrig.setText(stringBuilder.toString());
+
     }
 }

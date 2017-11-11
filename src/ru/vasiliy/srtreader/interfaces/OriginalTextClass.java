@@ -7,6 +7,7 @@ import java.util.ArrayList;
 public class OriginalTextClass {
 
     private StringBuilder stringBuilder = new StringBuilder();
+    private StringBuilder stringBuilderWithLineBreak = new StringBuilder();
     private String resultText;
     private CollectionSrtFiles cltStrFiles;
     private String[] originalText;
@@ -21,12 +22,16 @@ public class OriginalTextClass {
                 // считаем сначала первую строку
                 String line = reader.readLine();
                 String lineExt = line +" ";
+                String lineWithLineBreak = line + "\n";
                 stringBuilder.append(lineExt);
+                stringBuilderWithLineBreak.append(lineWithLineBreak);
                 while (line != null) {
                     // считываем остальные строки в цикле
                     line = reader.readLine();
                     lineExt = line+ " ";
+                    lineWithLineBreak = line + "\n";
                     stringBuilder.append(lineExt);
+                    stringBuilderWithLineBreak.append(lineWithLineBreak);
                 }
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -39,6 +44,10 @@ public class OriginalTextClass {
 
     public String toString(){
         return stringBuilder.toString();
+    }
+
+    public StringBuilder getStringBuilderWithLineBreak() {
+        return stringBuilderWithLineBreak;
     }
 
     public String removeMoreSpace(String result){
