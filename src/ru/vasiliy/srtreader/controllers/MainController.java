@@ -8,6 +8,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import ru.vasiliy.srtreader.interfaces.CollectionSrtFiles;
@@ -17,6 +21,8 @@ import ru.vasiliy.srtreader.objects.SrtFile;
 import java.io.*;
 
 public class MainController {
+    @FXML
+    private TextField txtSearch;
     @FXML
     private TextArea textAreaOrig;
     @FXML
@@ -126,50 +132,59 @@ public class MainController {
     }
 
     public void openFile(ActionEvent actionEvent) {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Open SRT File");
-        fileChooser.setInitialDirectory(new File("D:\\Java\\Audiobooks"));
-        Stage stage = (Stage) menuFile.getScene().getWindow();
-        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("SRT Files", "*.srt") );
-        File file = fileChooser.showOpenDialog(stage);
-        if(file!=null){
-            try {
-                int count=0;
-                String[] srtLines = new String[3];
-                 FileReader fr = new FileReader(file);
-                //создаем BufferedReader с существующего FileReader для построчного считывания
-                BufferedReader reader = new BufferedReader(fr);
-                // считаем сначала первую строку
-                String line = reader.readLine();
-                while (line != null) {
+        if (originalTextClass.getResultText().equals("")) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Порядок открытия файлов");
+            alert.setHeaderText(null);
+            alert.setContentText("Откройте сначала файл с текстом!");
+            alert.showAndWait();
+        } else {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Open SRT File");
+            fileChooser.setInitialDirectory(new File("D:\\Java\\Audiobooks"));
+            Stage stage = (Stage) menuFile.getScene().getWindow();
+            fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("SRT Files", "*.srt"));
+            File file = fileChooser.showOpenDialog(stage);
+            if (file != null) {
+                try {
+                    int count = 0;
+                    String[] srtLines = new String[3];
+                    FileReader fr = new FileReader(file);
+                    //создаем BufferedReader с существующего FileReader для построчного считывания
+                    BufferedReader reader = new BufferedReader(fr);
+                    // считаем сначала первую строку
+                    String line = reader.readLine();
+                    while (line != null) {
 
-                    switch (count){
-                        case 0:
-                            srtLines[0]=line;
-                            count = count + 1;
-                            break;
-                        case 1:
-                            srtLines[1]=line;
-                            count = count + 1;
-                            break;
-                        case 2:
-                            srtLines[2]=line;
-                            SrtFile srtFile = new SrtFile(srtLines[0],srtLines[1],srtLines[2],"","");
-                            collectionSrtFiles.add(srtFile);
-                            count = count + 1;
-                            break;
-                        case 3:
-                            count=0;
-                            break;
+                        switch (count) {
+                            case 0:
+                                srtLines[0] = line;
+                                count = count + 1;
+                                break;
+                            case 1:
+                                srtLines[1] = line;
+                                count = count + 1;
+                                break;
+                            case 2:
+                                srtLines[2] = line;
+                                SrtFile srtFile = new SrtFile(srtLines[0], srtLines[1], srtLines[2], "", "");
+                                collectionSrtFiles.add(srtFile);
+                                count = count + 1;
+                                break;
+                            case 3:
+                                count = 0;
+                                break;
+                        }
+                        // считываем остальные строки в цикле
+                        line = reader.readLine();
                     }
-                    // считываем остальные строки в цикле
-                    line = reader.readLine();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
             }
+        reconciliationTexts();
         }
     }
 
@@ -193,7 +208,7 @@ public class MainController {
         originalTextClass.splitEditText();
     }
 
-    public void openTest(ActionEvent actionEvent) {
+    private void reconciliationTexts(){
         for(int i=0;i<collectionSrtFiles.getSrtList().size();i++) {
             SrtFile tmpSrtFile = new SrtFile();
             tmpSrtFile.setCount(collectionSrtFiles.getSrtList().get(i).getCount());
@@ -211,11 +226,33 @@ public class MainController {
     }
 
     public void actionTemp(ActionEvent actionEvent) {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("Перваая строка"+"\n");
-        stringBuilder.append("Вторая строка"+"\n");
-        stringBuilder.append("Третья строка"+"\n");
-        textAreaOrig.setText(stringBuilder.toString());
+        textAreaOrig.positionCaret(1000);
+        textAreaOrig.selectPositionCaret(1200);
 
+    }
+
+    public void actionSearch(KeyEvent keyEvent) {
+        if(keyEvent.getCode().equals(KeyCode.ENTER)){
+            searchText(txtSearch.getText());
+        }
+
+    }
+
+    private void searchText(String srhText){
+        int index = textAreaOrig.getText().indexOf(srhText);
+        if (index!=-1) {
+            textAreaOrig.requestFocus();
+            textAreaOrig.positionCaret(index);
+            int lenght = srhText.length();
+            textAreaOrig.selectPositionCaret(index + lenght);
+        }
+    }
+
+    public void actionTableClick(MouseEvent mouseEvent) {
+        if(mouseEvent.getButton()== MouseButton.SECONDARY){
+            System.out.println("Work!!!");
+            SrtFile selectedSrtFile = tbvTable.getSelectionModel().getSelectedItem();
+            searchText(selectedSrtFile.getOrigText());
+        }
     }
 }

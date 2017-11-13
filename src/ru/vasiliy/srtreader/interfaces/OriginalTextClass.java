@@ -8,7 +8,7 @@ public class OriginalTextClass {
 
     private StringBuilder stringBuilder = new StringBuilder();
     private StringBuilder stringBuilderWithLineBreak = new StringBuilder();
-    private String resultText;
+    private String resultText="";
     private CollectionSrtFiles cltStrFiles;
     private String[] originalText;
     private String[] editText;
@@ -133,5 +133,9 @@ public class OriginalTextClass {
             }
         }
         return true;
+    }
+
+    public String getResultText() {
+        return resultText;
     }
 }

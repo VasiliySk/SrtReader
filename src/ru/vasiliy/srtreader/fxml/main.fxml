@@ -5,6 +5,7 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
@@ -21,7 +22,7 @@
             <items>
                   <MenuItem fx:id="menuTxtOpen" mnemonicParsing="false" onAction="#openTxtFile" text="Открыть текст" />
               <MenuItem fx:id="menuOpen" mnemonicParsing="false" onAction="#openFile" text="Открыть Srt файл" />
-                  <MenuItem fx:id="menuTxtTest" mnemonicParsing="false" onAction="#openTest" text="Тест" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem fx:id="menuClose" mnemonicParsing="false" onAction="#actionClose" text="Закрыть" />
             </items>
           </Menu>
@@ -57,7 +58,7 @@
                         </AnchorPane>
                         <AnchorPane prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                            <children>
-                              <TableView fx:id="tbvTable" editable="true" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <TableView fx:id="tbvTable" editable="true" onMouseClicked="#actionTableClick" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                 <columns>
                                   <TableColumn fx:id="tbcIndex" maxWidth="75.0" minWidth="55.0" prefWidth="75.0" text="Индекс" />
                                   <TableColumn fx:id="tbcTimeLine" maxWidth="400.0" minWidth="200.0" prefWidth="300.0" text="TimeLine" />
@@ -80,7 +81,30 @@
             </AnchorPane>
             <AnchorPane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
                <children>
-                  <TextArea fx:id="textAreaOrig" prefHeight="200.0" prefWidth="200.0" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <AnchorPane>
+                           <children>
+                              <TextField fx:id="txtSearch" onKeyPressed="#actionSearch" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                 <padding>
+                                    <Insets bottom="10.0" top="10.0" />
+                                 </padding>
+                              </TextField>
+                           </children>
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
+                        </AnchorPane>
+                        <AnchorPane VBox.vgrow="ALWAYS">
+                           <children>
+                              <TextArea fx:id="textAreaOrig" prefHeight="200.0" prefWidth="200.0" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                           </children>
+                           <VBox.margin>
+                              <Insets top="20.0" />
+                           </VBox.margin>
+                        </AnchorPane>
+                     </children>
+                  </VBox>
                </children>
                <HBox.margin>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
