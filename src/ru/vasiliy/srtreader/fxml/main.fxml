@@ -20,6 +20,10 @@
         <menus>
           <Menu mnemonicParsing="false" text="Файл">
             <items>
+                  <MenuItem fx:id="menuOpenProject" mnemonicParsing="false" onAction="#openProject" text="Открыть проект" />
+                  <MenuItem fx:id="menuSaveProject" mnemonicParsing="false" onAction="#saveProject" text="Сохранить проект" />
+                  <MenuItem fx:id="menuSaveProjectAs" mnemonicParsing="false" onAction="#saveProjectAs" text="Сохранить проект как..." />
+                  <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem fx:id="menuTxtOpen" mnemonicParsing="false" onAction="#openTxtFile" text="Открыть текст" />
               <MenuItem fx:id="menuOpen" mnemonicParsing="false" onAction="#openFile" text="Открыть Srt файл" />
                   <SeparatorMenuItem mnemonicParsing="false" />

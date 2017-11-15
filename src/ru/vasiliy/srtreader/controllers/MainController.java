@@ -16,11 +16,20 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import ru.vasiliy.srtreader.interfaces.CollectionSrtFiles;
 import ru.vasiliy.srtreader.interfaces.OriginalTextClass;
+import ru.vasiliy.srtreader.lib.MsgBoxClass;
 import ru.vasiliy.srtreader.objects.SrtFile;
 
 import java.io.*;
 
+import static ru.vasiliy.srtreader.lib.MsgBoxClass.MsgBox;
+
 public class MainController {
+    @FXML
+    private MenuItem menuSaveProjectAs;
+    @FXML
+    private MenuItem menuSaveProject;
+    @FXML
+    private MenuItem menuOpenProject;
     @FXML
     private TextField txtSearch;
     @FXML
@@ -133,11 +142,7 @@ public class MainController {
 
     public void openFile(ActionEvent actionEvent) {
         if (originalTextClass.getResultText().equals("")) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Порядок открытия файлов");
-            alert.setHeaderText(null);
-            alert.setContentText("Откройте сначала файл с текстом!");
-            alert.showAndWait();
+            MsgBox("Откройте сначала файл с текстом!");
         } else {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Open SRT File");
@@ -221,7 +226,6 @@ public class MainController {
                 tmpSrtFile.setCheckText("!true");
             }
             collectionSrtFiles.getSrtList().set(i,tmpSrtFile);
-            System.out.println(originalTextClass.checkText(i));
         }
     }
 
@@ -250,9 +254,20 @@ public class MainController {
 
     public void actionTableClick(MouseEvent mouseEvent) {
         if(mouseEvent.getButton()== MouseButton.SECONDARY){
-            System.out.println("Work!!!");
             SrtFile selectedSrtFile = tbvTable.getSelectionModel().getSelectedItem();
             searchText(selectedSrtFile.getOrigText());
         }
+    }
+
+    public void openProject(ActionEvent actionEvent) {
+        MsgBox("Открыть проект");
+    }
+
+    public void saveProject(ActionEvent actionEvent) {
+        MsgBox("Сохранить проект");
+    }
+
+    public void saveProjectAs(ActionEvent actionEvent) {
+        MsgBox("Сохранить проект как...");
     }
 }
