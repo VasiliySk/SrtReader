@@ -1,6 +1,7 @@
 package ru.vasiliy.srtreader.lib;
 
 import javafx.scene.control.Alert;
+import javafx.stage.StageStyle;
 
 public class MsgBoxClass {
 
@@ -9,7 +10,9 @@ public class MsgBoxClass {
         alert.setTitle("Сообщение");
         alert.setHeaderText(null);
         alert.setContentText(text);
+        alert.initStyle(StageStyle.UTILITY);
         alert.showAndWait();
     }
+
 
 }

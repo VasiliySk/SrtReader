@@ -14,15 +14,15 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.vasiliy.srtreader.controllers.MainController">
+<VBox fx:id="vBox" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.vasiliy.srtreader.controllers.MainController">
    <children>
       <MenuBar fx:id="menuFile">
         <menus>
           <Menu mnemonicParsing="false" text="Файл">
             <items>
                   <MenuItem fx:id="menuOpenProject" mnemonicParsing="false" onAction="#openProject" text="Открыть проект" />
-                  <MenuItem fx:id="menuSaveProject" mnemonicParsing="false" onAction="#saveProject" text="Сохранить проект" />
-                  <MenuItem fx:id="menuSaveProjectAs" mnemonicParsing="false" onAction="#saveProjectAs" text="Сохранить проект как..." />
+                  <MenuItem fx:id="menuSaveProject" disable="true" mnemonicParsing="false" onAction="#saveProject" text="Сохранить проект" />
+                  <MenuItem fx:id="menuSaveProjectAs" disable="true" mnemonicParsing="false" onAction="#saveProjectAs" text="Сохранить проект как..." />
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem fx:id="menuTxtOpen" mnemonicParsing="false" onAction="#openTxtFile" text="Открыть текст" />
               <MenuItem fx:id="menuOpen" mnemonicParsing="false" onAction="#openFile" text="Открыть Srt файл" />

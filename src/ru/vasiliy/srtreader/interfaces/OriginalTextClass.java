@@ -30,8 +30,10 @@ public class OriginalTextClass {
                     line = reader.readLine();
                     lineExt = line+ " ";
                     lineWithLineBreak = line + "\n";
-                    stringBuilder.append(lineExt);
-                    stringBuilderWithLineBreak.append(lineWithLineBreak);
+                    if (line != null){
+                        stringBuilder.append(lineExt);
+                        stringBuilderWithLineBreak.append(lineWithLineBreak);
+                    }
                 }
             } catch (FileNotFoundException e) {
                 e.printStackTrace();

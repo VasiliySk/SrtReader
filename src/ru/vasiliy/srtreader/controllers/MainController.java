@@ -5,6 +5,7 @@ import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
@@ -12,11 +13,13 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import ru.vasiliy.srtreader.interfaces.CollectionSrtFiles;
 import ru.vasiliy.srtreader.interfaces.OriginalTextClass;
-import ru.vasiliy.srtreader.lib.MsgBoxClass;
+import ru.vasiliy.srtreader.interfaces.ProjectSrt;
 import ru.vasiliy.srtreader.objects.SrtFile;
 
 import java.io.*;
@@ -24,6 +27,8 @@ import java.io.*;
 import static ru.vasiliy.srtreader.lib.MsgBoxClass.MsgBox;
 
 public class MainController {
+    @FXML
+    private VBox vBox;
     @FXML
     private MenuItem menuSaveProjectAs;
     @FXML
@@ -54,6 +59,8 @@ public class MainController {
     private CollectionSrtFiles collectionSrtFiles = new CollectionSrtFiles();
 
     private OriginalTextClass originalTextClass = new OriginalTextClass();
+
+    private ProjectSrt projectSrt =new ProjectSrt();
 
     private String result;
 
@@ -140,6 +147,7 @@ public class MainController {
         stage.close();
     }
 
+    //Выбираем и загружаем SRT файл
     public void openFile(ActionEvent actionEvent) {
         if (originalTextClass.getResultText().equals("")) {
             MsgBox("Откройте сначала файл с текстом!");
@@ -189,7 +197,9 @@ public class MainController {
                     e.printStackTrace();
                 }
             }
-        reconciliationTexts();
+            reconciliationTexts();
+            menuSaveProject.setDisable(false);
+            menuSaveProjectAs.setDisable(false);
         }
     }
 
@@ -259,15 +269,54 @@ public class MainController {
         }
     }
 
+    //Открываем сохраненный ранее проект
     public void openProject(ActionEvent actionEvent) {
-        MsgBox("Открыть проект");
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Открыть проект");
+        fileChooser.setInitialDirectory(new File("D:\\Java\\Audiobooks"));
+        Stage stage = (Stage) menuFile.getScene().getWindow();
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Файл проекта", "*.psrt") );
+        File file = fileChooser.showOpenDialog(stage);
+        if(file!=null) {
+            projectSrt.setProjectFile(file);
+            try {
+                FileReader fr = new FileReader(file);
+                BufferedReader reader = new BufferedReader(fr);
+                String line = reader.readLine();
+                textAreaOrig.setText(projectSrt.openOriginalTextFile(line));
+                line = reader.readLine();
+                collectionSrtFiles = projectSrt.openExtendedSrtFile(line);//Надо доработать здесь!!!
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
-    public void saveProject(ActionEvent actionEvent) {
-        MsgBox("Сохранить проект");
+    public void saveProject(ActionEvent actionEvent)
+    {
+        if(projectSrt.getProjectFile()!=null){
+            projectSrt.saveOriginalTextFile(originalTextClass.getStringBuilderWithLineBreak().toString());
+            projectSrt.saveExtendedSrtFile(collectionSrtFiles.getSrtList());
+        }else{
+            saveProjectAs(actionEvent);
+        }
     }
 
+    //Сохраняем проект с выбором места и названия файла проекта
     public void saveProjectAs(ActionEvent actionEvent) {
-        MsgBox("Сохранить проект как...");
+        FileChooser fileChooser = new FileChooser();
+        Window parentWindow = menuFile.getScene().getWindow();
+        fileChooser.setInitialDirectory(new File("D:\\Java\\Audiobooks"));
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Файл проекта", "*.psrt");
+        fileChooser.getExtensionFilters().add(extFilter);
+        File file = fileChooser.showSaveDialog(parentWindow);
+        projectSrt.setProjectFile(file);
+        if (file!=null){
+            projectSrt.saveProjectFile();
+            projectSrt.saveOriginalTextFile(originalTextClass.getStringBuilderWithLineBreak().toString());
+            projectSrt.saveExtendedSrtFile(collectionSrtFiles.getSrtList());
+        }
     }
 }
