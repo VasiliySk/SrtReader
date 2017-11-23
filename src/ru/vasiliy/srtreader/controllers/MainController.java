@@ -1,5 +1,7 @@
 package ru.vasiliy.srtreader.controllers;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
@@ -7,6 +9,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.KeyCode;
@@ -17,6 +20,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import javafx.util.converter.DefaultStringConverter;
 import ru.vasiliy.srtreader.interfaces.CollectionSrtFiles;
 import ru.vasiliy.srtreader.interfaces.OriginalTextClass;
 import ru.vasiliy.srtreader.interfaces.ProjectSrt;
@@ -27,6 +31,10 @@ import java.io.*;
 import static ru.vasiliy.srtreader.lib.MsgBoxClass.MsgBox;
 
 public class MainController {
+    @FXML
+    private MenuItem menuOpen;
+    @FXML
+    private MenuItem menuTxtOpen;
     @FXML
     private VBox vBox;
     @FXML
@@ -70,9 +78,12 @@ public class MainController {
     @FXML
     private MenuBar menuFile;
 
+    private ObservableList<String> statusField;
+
 
     @FXML
     private void initialize(){
+
         tbcIndex.setCellValueFactory(new PropertyValueFactory<SrtFile,String>("count"));
         tbcTimeLine.setCellValueFactory(new PropertyValueFactory<SrtFile,String>("timeLine"));
         tbcSrtText.setCellValueFactory(new PropertyValueFactory<SrtFile,String>("srtText"));
@@ -140,6 +151,12 @@ public class MainController {
                         t.getTablePosition().getRow()).setOrigText(t.getNewValue())
         );
 
+        //Вызов ComboBox при редактировании tbcCheckText
+        statusField = FXCollections.observableArrayList();
+        statusField.add("!true");
+        statusField.add("!false");
+        statusField.add("!edited");
+        tbcCheckText.setCellFactory(ComboBoxTableCell.forTableColumn(new DefaultStringConverter(),statusField));
     }
 
     public void actionClose(ActionEvent actionEvent) {
@@ -283,21 +300,28 @@ public class MainController {
                 FileReader fr = new FileReader(file);
                 BufferedReader reader = new BufferedReader(fr);
                 String line = reader.readLine();
+                projectSrt.setOriginalTextFile(new File (line));
                 textAreaOrig.setText(projectSrt.openOriginalTextFile(line));
                 line = reader.readLine();
-                collectionSrtFiles = projectSrt.openExtendedSrtFile(line);//Надо доработать здесь!!!
+                projectSrt.setExtendedSrtFile(new File(line));
+                projectSrt.openExtendedSrtFile(line, collectionSrtFiles);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }catch (IOException e) {
                 e.printStackTrace();
             }
         }
+        menuSaveProject.setDisable(false);
+        menuSaveProjectAs.setDisable(false);
+        menuTxtOpen.setDisable(true);
+        menuOpen.setDisable(true);
     }
 
+    //Сохраняем проект
     public void saveProject(ActionEvent actionEvent)
     {
         if(projectSrt.getProjectFile()!=null){
-            projectSrt.saveOriginalTextFile(originalTextClass.getStringBuilderWithLineBreak().toString());
+            projectSrt.saveOriginalTextFile(textAreaOrig.getText());
             projectSrt.saveExtendedSrtFile(collectionSrtFiles.getSrtList());
         }else{
             saveProjectAs(actionEvent);
@@ -315,8 +339,20 @@ public class MainController {
         projectSrt.setProjectFile(file);
         if (file!=null){
             projectSrt.saveProjectFile();
-            projectSrt.saveOriginalTextFile(originalTextClass.getStringBuilderWithLineBreak().toString());
+            projectSrt.saveOriginalTextFile(textAreaOrig.getText());
             projectSrt.saveExtendedSrtFile(collectionSrtFiles.getSrtList());
+        }
+    }
+
+    public void saveSrtFile(ActionEvent actionEvent) {
+        FileChooser fileChooser = new FileChooser();
+        Window parentWindow = menuFile.getScene().getWindow();
+        fileChooser.setInitialDirectory(new File("D:\\Java\\Audiobooks"));
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Srt файл", "*.srt");
+        fileChooser.getExtensionFilters().add(extFilter);
+        File file = fileChooser.showSaveDialog(parentWindow);
+        if (file!=null) {
+            projectSrt.saveSrtFile(file, collectionSrtFiles);
         }
     }
 }

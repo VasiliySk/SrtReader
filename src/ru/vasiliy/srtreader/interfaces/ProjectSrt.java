@@ -138,8 +138,7 @@ public class ProjectSrt {
         }
     }
 
-    public CollectionSrtFiles openExtendedSrtFile(String fileAdress){
-        CollectionSrtFiles collectionSrtFiles=new CollectionSrtFiles();
+    public void openExtendedSrtFile(String fileAdress, CollectionSrtFiles collectionSrtFiles){
         String line1="";
         String line2="";
         String line3="";
@@ -189,7 +188,28 @@ public class ProjectSrt {
         }catch (IOException e) {
             e.printStackTrace();
         }
+    }
 
-        return collectionSrtFiles;
+    public void saveSrtFile(File file,CollectionSrtFiles collectionSrtFiles){
+
+        try {
+            FileWriter fileWriter = new FileWriter(file);
+            BufferedWriter buffer = new BufferedWriter(fileWriter);
+            System.out.println(collectionSrtFiles.getSrtList().size());
+            for(int i=0; i<collectionSrtFiles.getSrtList().size();i++){
+                buffer.write(collectionSrtFiles.getSrtList().get(i).getCount());
+                buffer.newLine();
+                buffer.write(collectionSrtFiles.getSrtList().get(i).getTimeLine());
+                buffer.newLine();
+                buffer.write(collectionSrtFiles.getSrtList().get(i).getOrigText());
+                buffer.newLine();
+                buffer.newLine();
+            }
+         buffer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }
+
