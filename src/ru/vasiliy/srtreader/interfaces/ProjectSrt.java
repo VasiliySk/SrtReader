@@ -127,7 +127,9 @@ public class ProjectSrt {
                     lineWithLineBreak = line + "\n";
                     stringBuilder.append(lineWithLineBreak);
                 }
+
             }
+            reader.close();
             return stringBuilder.toString();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -183,6 +185,7 @@ public class ProjectSrt {
                         break;
                 }
             }
+            reader.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }catch (IOException e) {

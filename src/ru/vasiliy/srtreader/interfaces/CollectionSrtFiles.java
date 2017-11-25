@@ -12,6 +12,11 @@ public class CollectionSrtFiles {
         getSrtList().add(srtFile);
     }
 
+    //очищает коллекцию
+    public void clean(){
+        srtList.clear();
+    }
+
     public ObservableList<SrtFile> getSrtList() {
         return srtList;
     }

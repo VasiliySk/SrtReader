@@ -295,6 +295,7 @@ public class MainController {
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Файл проекта", "*.psrt") );
         File file = fileChooser.showOpenDialog(stage);
         if(file!=null) {
+            collectionSrtFiles.clean();
             projectSrt.setProjectFile(file);
             try {
                 FileReader fr = new FileReader(file);
@@ -305,16 +306,17 @@ public class MainController {
                 line = reader.readLine();
                 projectSrt.setExtendedSrtFile(new File(line));
                 projectSrt.openExtendedSrtFile(line, collectionSrtFiles);
+                menuSaveProject.setDisable(false);
+                menuSaveProjectAs.setDisable(false);
+                menuTxtOpen.setDisable(true);
+                menuOpen.setDisable(true);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        menuSaveProject.setDisable(false);
-        menuSaveProjectAs.setDisable(false);
-        menuTxtOpen.setDisable(true);
-        menuOpen.setDisable(true);
+
     }
 
     //Сохраняем проект
