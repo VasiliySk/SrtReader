@@ -10,8 +10,8 @@ public class OriginalTextClass {
     private StringBuilder stringBuilderWithLineBreak = new StringBuilder();
     private String resultText="";
     private CollectionSrtFiles cltStrFiles;
-    private String[] originalText;
-    private String[] editText;
+    private String[] originalText; //Массив строк оригинального текста с учетом спецсимволов
+    private String[] editText; //Массив строк оригинального текста с удаленными спецсимволами
 
     public void openTxtFile(File file){
         if(file!=null){
@@ -82,8 +82,9 @@ public class OriginalTextClass {
     private String delNoDigOrLet (String s) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < s.length(); i++) {
-            if (Character .isLetterOrDigit(s.charAt(i)))
+            if ((Character .isLetterOrDigit(s.charAt(i)) == true)||(s.charAt(i)=='\'')) {
                 sb.append(s.charAt(i));
+            }
         }
         return sb.toString();
     }
@@ -96,6 +97,7 @@ public class OriginalTextClass {
         this.cltStrFiles = cltStrFiles;
     }
 
+    //Проверяем есть ли строка из SRT файла в оригинальном тексте
     public String checkText(int count){
         ArrayList<Boolean> bools= new ArrayList<>();
         String[] srt = cltStrFiles.getSrtList().get(count).getSrtText().split(" ");

@@ -27,6 +27,9 @@ import ru.vasiliy.srtreader.interfaces.ProjectSrt;
 import ru.vasiliy.srtreader.objects.SrtFile;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static ru.vasiliy.srtreader.lib.MsgBoxClass.MsgBox;
 
@@ -171,7 +174,11 @@ public class MainController {
         } else {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Open SRT File");
-            fileChooser.setInitialDirectory(new File("D:\\Java\\Audiobooks"));
+            //Проверяем существует ли папка по умолчанию
+            Path path = Paths.get("D:\\Java\\Audiobooks");
+            if (Files.exists(path)) {
+                fileChooser.setInitialDirectory(new File("D:\\Java\\Audiobooks"));
+            }
             Stage stage = (Stage) menuFile.getScene().getWindow();
             fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("SRT Files", "*.srt"));
             File file = fileChooser.showOpenDialog(stage);
@@ -223,7 +230,11 @@ public class MainController {
     public void openTxtFile(ActionEvent actionEvent) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Txt File");
-        fileChooser.setInitialDirectory(new File("D:\\Java\\Audiobooks"));
+        //Проверяем существует ли папка по умолчанию
+        Path path = Paths.get("D:\\Java\\Audiobooks");
+        if (Files.exists(path)) {
+            fileChooser.setInitialDirectory(new File("D:\\Java\\Audiobooks"));
+        }
         Stage stage = (Stage) menuFile.getScene().getWindow();
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("TXT Files", "*.txt") );
         File file = fileChooser.showOpenDialog(stage);
@@ -290,7 +301,11 @@ public class MainController {
     public void openProject(ActionEvent actionEvent) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Открыть проект");
-        fileChooser.setInitialDirectory(new File("D:\\Java\\Audiobooks"));
+        //Проверяем существует ли папка по умолчанию
+        Path path = Paths.get("D:\\Java\\Audiobooks");
+        if (Files.exists(path)) {
+            fileChooser.setInitialDirectory(new File("D:\\Java\\Audiobooks"));
+        }
         Stage stage = (Stage) menuFile.getScene().getWindow();
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Файл проекта", "*.psrt") );
         File file = fileChooser.showOpenDialog(stage);
@@ -334,7 +349,11 @@ public class MainController {
     public void saveProjectAs(ActionEvent actionEvent) {
         FileChooser fileChooser = new FileChooser();
         Window parentWindow = menuFile.getScene().getWindow();
-        fileChooser.setInitialDirectory(new File("D:\\Java\\Audiobooks"));
+        //Проверяем существует ли папка по умолчанию
+        Path path = Paths.get("D:\\Java\\Audiobooks");
+        if (Files.exists(path)) {
+            fileChooser.setInitialDirectory(new File("D:\\Java\\Audiobooks"));
+        }
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Файл проекта", "*.psrt");
         fileChooser.getExtensionFilters().add(extFilter);
         File file = fileChooser.showSaveDialog(parentWindow);
@@ -349,7 +368,11 @@ public class MainController {
     public void saveSrtFile(ActionEvent actionEvent) {
         FileChooser fileChooser = new FileChooser();
         Window parentWindow = menuFile.getScene().getWindow();
-        fileChooser.setInitialDirectory(new File("D:\\Java\\Audiobooks"));
+        //Проверяем существует ли папка по умолчанию
+        Path path = Paths.get("D:\\Java\\Audiobooks");
+        if (Files.exists(path)) {
+            fileChooser.setInitialDirectory(new File("D:\\Java\\Audiobooks"));
+        }
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Srt файл", "*.srt");
         fileChooser.getExtensionFilters().add(extFilter);
         File file = fileChooser.showSaveDialog(parentWindow);
