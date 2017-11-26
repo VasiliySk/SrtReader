@@ -1,6 +1,7 @@
 package ru.vasiliy.srtreader.controllers;
 
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
@@ -34,6 +35,8 @@ import java.nio.file.Paths;
 import static ru.vasiliy.srtreader.lib.MsgBoxClass.MsgBox;
 
 public class MainController {
+    @FXML
+    private Label lblStatusText; //Текстовая строка статуса
     @FXML
     private MenuItem menuOpen;
     @FXML
@@ -83,6 +86,9 @@ public class MainController {
 
     private ObservableList<String> statusField;
 
+    FilteredList<SrtFile> filteredData = new FilteredList<>(collectionSrtFiles.getSrtList(), p -> true);
+    SortedList<SrtFile> sortedData = new SortedList<>(filteredData);
+
 
     @FXML
     private void initialize(){
@@ -93,7 +99,11 @@ public class MainController {
         tbcOrigText.setCellValueFactory(new PropertyValueFactory<SrtFile,String>("origText"));
         tbcCheckText.setCellValueFactory(new PropertyValueFactory<SrtFile,String>("checkText"));
 
-        FilteredList<SrtFile> filteredData = new FilteredList<>(collectionSrtFiles.getSrtList(), p -> true);
+        collectionSrtFiles.getSrtList().addListener((ListChangeListener) (c) ->{
+            updateCountList();
+        });
+
+
 
         txtFilter.textProperty().addListener((observable, oldValue, newValue) -> {
             filteredData.setPredicate(srtFile -> {
@@ -118,9 +128,10 @@ public class MainController {
                 }
                 return false; // Does not match.
             });
+            updateCountList();
         });
 
-        SortedList<SrtFile> sortedData = new SortedList<>(filteredData);
+
         sortedData.comparatorProperty().bind(tbvTable.comparatorProperty());
         tbvTable.setItems(sortedData);
 
@@ -224,6 +235,7 @@ public class MainController {
             reconciliationTexts();
             menuSaveProject.setDisable(false);
             menuSaveProjectAs.setDisable(false);
+            lblStatusText.setText("Файл субтитров загружен.");
         }
     }
 
@@ -249,6 +261,7 @@ public class MainController {
         originalTextClass.splitOriginalText();
 
         originalTextClass.splitEditText();
+        lblStatusText.setText("Оригинальный текст загружен.");
     }
 
     private void reconciliationTexts(){
@@ -325,6 +338,7 @@ public class MainController {
                 menuSaveProjectAs.setDisable(false);
                 menuTxtOpen.setDisable(true);
                 menuOpen.setDisable(true);
+                lblStatusText.setText("Проект загружен.");
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }catch (IOException e) {
@@ -340,8 +354,10 @@ public class MainController {
         if(projectSrt.getProjectFile()!=null){
             projectSrt.saveOriginalTextFile(textAreaOrig.getText());
             projectSrt.saveExtendedSrtFile(collectionSrtFiles.getSrtList());
+            lblStatusText.setText("Проект сохранен.");
         }else{
             saveProjectAs(actionEvent);
+            lblStatusText.setText("Проект сохранен.");
         }
     }
 
@@ -362,6 +378,7 @@ public class MainController {
             projectSrt.saveProjectFile();
             projectSrt.saveOriginalTextFile(textAreaOrig.getText());
             projectSrt.saveExtendedSrtFile(collectionSrtFiles.getSrtList());
+            lblStatusText.setText("Проект сохранен.");
         }
     }
 
@@ -378,6 +395,21 @@ public class MainController {
         File file = fileChooser.showSaveDialog(parentWindow);
         if (file!=null) {
             projectSrt.saveSrtFile(file, collectionSrtFiles);
+            lblStatusText.setText("Файл субтитров сохранен.");
         }
+    }
+
+    private void updateCountList(){
+        lblStatusText.setText("Количество записей в таблице: "+sortedData.size());
+    }
+
+    public void actionDown(ActionEvent actionEvent) {
+        tbvTable.requestFocus();
+        tbvTable.getFocusModel().focus(10);
+        tbvTable.getSelectionModel().select(10);
+    }
+
+    public void actionUp(ActionEvent actionEvent) {
+        MsgBox("Up");
     }
 }
