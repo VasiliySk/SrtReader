@@ -14,5 +14,14 @@ public class MsgBoxClass {
         alert.showAndWait();
     }
 
+    public static void MsgBox(int text){
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Сообщение");
+        alert.setHeaderText(null);
+        alert.setContentText(Integer.toString(text));
+        alert.initStyle(StageStyle.UTILITY);
+        alert.showAndWait();
+    }
+
 
 }

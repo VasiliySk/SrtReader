@@ -281,9 +281,15 @@ public class MainController {
     }
 
     public void actionTemp(ActionEvent actionEvent) {
-        textAreaOrig.positionCaret(1000);
-        textAreaOrig.selectPositionCaret(1200);
+        searchTextExt();
+    }
 
+    //Поиск текста, игнорируя спецсимволы, лишние пробелы и т.п.
+    private void searchTextExt(){
+        String searchString = "architecture. The odd superstitions";
+        String basicText = textAreaOrig.getText();
+        int index = basicText.indexOf(searchString);
+        MsgBox(index);
     }
 
     public void actionSearch(KeyEvent keyEvent) {
@@ -404,12 +410,42 @@ public class MainController {
     }
 
     public void actionDown(ActionEvent actionEvent) {
-        tbvTable.requestFocus();
-        tbvTable.getFocusModel().focus(10);
-        tbvTable.getSelectionModel().select(10);
+        int selectedSrtCount=tbvTable.getSelectionModel().getSelectedIndex();
+        if (selectedSrtCount != -1) {
+            for (int i =selectedSrtCount+1; i <sortedData.size(); i++){
+                if(sortedData.get(i).getOrigText().equals("QWERTY")){
+                    tbvTable.requestFocus();
+                    tbvTable.getFocusModel().focus(i);
+                    tbvTable.getSelectionModel().select(i);
+                    tbvTable.scrollTo(i-3);
+                    break;
+                }
+            }
+        } else {
+            for (int i =0; i <sortedData.size(); i++){
+                if(sortedData.get(i).getOrigText().equals("QWERTY")){
+                    tbvTable.requestFocus();
+                    tbvTable.getFocusModel().focus(i);
+                    tbvTable.getSelectionModel().select(i);
+                    tbvTable.scrollTo(i-3);
+                    break;
+                }
+            }
+        }
     }
 
     public void actionUp(ActionEvent actionEvent) {
-        MsgBox("Up");
+        int selectedSrtCount=tbvTable.getSelectionModel().getSelectedIndex();
+        if (selectedSrtCount != -1) {
+            for (int i =selectedSrtCount-1; i >=0; i--){
+                if(sortedData.get(i).getOrigText().equals("QWERTY")){
+                    tbvTable.requestFocus();
+                    tbvTable.getFocusModel().focus(i);
+                    tbvTable.getSelectionModel().select(i);
+                    tbvTable.scrollTo(i-3);
+                    break;
+                }
+            }
+        }
     }
 }
