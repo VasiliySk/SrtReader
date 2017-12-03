@@ -13,14 +13,12 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.input.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import javafx.util.Callback;
 import javafx.util.converter.DefaultStringConverter;
 import ru.vasiliy.srtreader.interfaces.CollectionSrtFiles;
 import ru.vasiliy.srtreader.interfaces.OriginalTextClass;
@@ -38,15 +36,15 @@ public class MainController {
     @FXML
     private Label lblStatusText; //Текстовая строка статуса
     @FXML
-    private MenuItem menuOpen;
+    private MenuItem menuOpen;//Меню "Открыть SRT файл"
     @FXML
-    private MenuItem menuTxtOpen;
+    private MenuItem menuTxtOpen;//Меню "Открыть TXT файл"
     @FXML
     private VBox vBox;
     @FXML
-    private MenuItem menuSaveProjectAs;
+    private MenuItem menuSaveProjectAs;//Меню "Сохранить проект как"
     @FXML
-    private MenuItem menuSaveProject;
+    private MenuItem menuSaveProject;//Меню "Сохранить проект"
     @FXML
     private MenuItem menuOpenProject;
     @FXML
@@ -171,6 +169,21 @@ public class MainController {
         statusField.add("!false");
         statusField.add("!edited");
         tbcCheckText.setCellFactory(ComboBoxTableCell.forTableColumn(new DefaultStringConverter(),statusField));
+
+        //Быстрые клавиши Ctrl+... для меню
+        menuOpenProject.setAccelerator(KeyCombination.keyCombination("shortcut+O"));
+        menuSaveProject.setAccelerator(KeyCombination.keyCombination("shortcut+S"));
+        menuOpen.setAccelerator(KeyCombination.keyCombination("shortcut+R"));
+        menuTxtOpen.setAccelerator(KeyCombination.keyCombination("shortcut+T"));
+
+        //Меню по правой кнопке
+        ContextMenu contextMenu = new ContextMenu();
+        MenuItem menuItemSearchText = new MenuItem("Поиск");
+        MenuItem menuItemSelectionText = new MenuItem("Подбор текста");
+        contextMenu.getItems().addAll(menuItemSearchText,menuItemSelectionText);
+        tbvTable.setContextMenu(contextMenu);
+
+
     }
 
     public void actionClose(ActionEvent actionEvent) {
@@ -311,8 +324,8 @@ public class MainController {
 
     public void actionTableClick(MouseEvent mouseEvent) {
         if(mouseEvent.getButton()== MouseButton.SECONDARY){
-            SrtFile selectedSrtFile = tbvTable.getSelectionModel().getSelectedItem();
-            searchText(selectedSrtFile.getOrigText());
+           /* SrtFile selectedSrtFile = tbvTable.getSelectionModel().getSelectedItem();
+            searchText(selectedSrtFile.getOrigText());*/
         }
     }
 
