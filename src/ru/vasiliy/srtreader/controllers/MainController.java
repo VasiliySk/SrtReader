@@ -29,6 +29,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 
 import static ru.vasiliy.srtreader.lib.MsgBoxClass.MsgBox;
 
@@ -100,8 +101,6 @@ public class MainController {
         collectionSrtFiles.getSrtList().addListener((ListChangeListener) (c) ->{
             updateCountList();
         });
-
-
 
         txtFilter.textProperty().addListener((observable, oldValue, newValue) -> {
             filteredData.setPredicate(srtFile -> {
@@ -179,11 +178,20 @@ public class MainController {
         //Меню по правой кнопке
         ContextMenu contextMenu = new ContextMenu();
         MenuItem menuItemSearchText = new MenuItem("Поиск");
+        menuItemSearchText.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent e) {
+            SrtFile selectedSrtFile = tbvTable.getSelectionModel().getSelectedItem();
+            searchText(selectedSrtFile.getOrigText());
+            }
+        });
         MenuItem menuItemSelectionText = new MenuItem("Подбор текста");
+        menuItemSelectionText.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent e) {
+                MsgBox("Заглушка");
+            }
+        });
         contextMenu.getItems().addAll(menuItemSearchText,menuItemSelectionText);
         tbvTable.setContextMenu(contextMenu);
-
-
     }
 
     public void actionClose(ActionEvent actionEvent) {
@@ -293,6 +301,7 @@ public class MainController {
         }
     }
 
+    //Тестовая функция
     public void actionTemp(ActionEvent actionEvent) {
         searchTextExt();
     }
@@ -301,8 +310,49 @@ public class MainController {
     private void searchTextExt(){
         String searchString = "architecture. The odd superstitions";
         String basicText = textAreaOrig.getText();
-        int index = basicText.indexOf(searchString);
-        MsgBox(index);
+        String[] searchStringMassive = new String[searchString.split(" ").length];
+        int k =0;
+        for (String retval : searchString.split(" ")) {
+            searchStringMassive[k]=retval;
+            k=k+1;
+        }
+        int startIndex = basicText.indexOf(searchStringMassive[0]);
+        int nextChar = startIndex + searchStringMassive[0].length();
+        for(int z = 1;z<searchStringMassive.length;z++){
+
+            char buf[] = new char[searchStringMassive[z].length()];
+            searchStringMassive[z].getChars(0, searchStringMassive[1].length(), buf, 0);
+
+            boolean charStatus = true;
+            char chr;
+            int bufCount = 0;
+            while (charStatus){
+                chr = basicText.charAt(nextChar);
+                switch (chr){
+                    case ' ':
+                        nextChar += 1;
+                        break;
+                    case '\n':
+                        nextChar += 1;
+                        break;
+                    default:
+                        if(chr==buf[bufCount]){
+                            nextChar += 1;
+                            bufCount +=1;
+                            System.out.println("Верно " +chr);
+                            if (bufCount==buf.length){
+                                charStatus = false;
+                            }
+                        }else{
+                            charStatus = false;
+                            System.out.println("Ложь_chr " +chr);
+                            System.out.println("Ложь_buf " +buf[bufCount]);
+
+                        }
+                }
+            }
+
+        }
     }
 
     public void actionSearch(KeyEvent keyEvent) {
@@ -319,13 +369,6 @@ public class MainController {
             textAreaOrig.positionCaret(index);
             int lenght = srhText.length();
             textAreaOrig.selectPositionCaret(index + lenght);
-        }
-    }
-
-    public void actionTableClick(MouseEvent mouseEvent) {
-        if(mouseEvent.getButton()== MouseButton.SECONDARY){
-           /* SrtFile selectedSrtFile = tbvTable.getSelectionModel().getSelectedItem();
-            searchText(selectedSrtFile.getOrigText());*/
         }
     }
 

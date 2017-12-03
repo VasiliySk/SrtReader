@@ -71,7 +71,7 @@
                         </AnchorPane>
                         <AnchorPane prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                            <children>
-                              <TableView fx:id="tbvTable" editable="true" onMouseClicked="#actionTableClick" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <TableView fx:id="tbvTable" editable="true" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                 <columns>
                                   <TableColumn fx:id="tbcIndex" maxWidth="75.0" minWidth="55.0" prefWidth="75.0" text="Индекс" />
                                   <TableColumn fx:id="tbcTimeLine" maxWidth="400.0" minWidth="200.0" prefWidth="300.0" text="TimeLine" />
