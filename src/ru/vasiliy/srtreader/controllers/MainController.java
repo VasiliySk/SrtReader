@@ -302,11 +302,6 @@ public class MainController {
         }
     }
 
-    //Тестовая функция
-    public void actionTemp(ActionEvent actionEvent) {
-
-    }
-
     public void actionSearch(KeyEvent keyEvent) {
         if(keyEvent.getCode().equals(KeyCode.ENTER)){
             SearchTextClass searchTextClass = new SearchTextClass();
@@ -450,5 +445,34 @@ public class MainController {
                 }
             }
         }
+    }
+
+
+    //Тестовая функция
+    public void actionTemp(ActionEvent actionEvent) {
+        SrtFile selectedSrtFile = tbvTable.getSelectionModel().getSelectedItem();
+        int stringCount = Integer.valueOf(selectedSrtFile.getCount());
+        SrtFile upSelectedSrtFile = collectionSrtFiles.getSrtList().get(stringCount-2);
+        SearchTextClass searchTextClass = new SearchTextClass();
+        ArrayList<Integer> upArrayList = searchTextClass.searchTextExt(upSelectedSrtFile.getOrigText(),textAreaOrig.getText());
+        SrtFile downSelectedSrtFile = collectionSrtFiles.getSrtList().get(stringCount);
+        ArrayList<Integer> downArrayList = searchTextClass.searchTextExt(downSelectedSrtFile.getOrigText(),textAreaOrig.getText());
+        selectedSrtFile.setOrigText(removeMoreSpaceAndLineBreak(textAreaOrig.getText(upArrayList.get(1),downArrayList.get(0)).trim()));
+        textAreaOrig.requestFocus();
+        textAreaOrig.positionCaret(upArrayList.get(1));
+        textAreaOrig.selectPositionCaret(downArrayList.get(0));
+    }
+
+    private String removeMoreSpaceAndLineBreak(String result){
+        while(result.contains("  ")) {
+            String replace = result.replace("  ", " ");
+            result=replace;
+        }
+        while(result.contains("\n")) {
+            String replace = result.replace("\n", "");
+            result=replace;
+        }
+
+        return result;
     }
 }
