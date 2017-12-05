@@ -23,6 +23,7 @@ import javafx.util.converter.DefaultStringConverter;
 import ru.vasiliy.srtreader.interfaces.CollectionSrtFiles;
 import ru.vasiliy.srtreader.interfaces.OriginalTextClass;
 import ru.vasiliy.srtreader.interfaces.ProjectSrt;
+import ru.vasiliy.srtreader.lib.SearchTextClass;
 import ru.vasiliy.srtreader.objects.SrtFile;
 
 import java.io.*;
@@ -178,18 +179,18 @@ public class MainController {
         //Меню по правой кнопке
         ContextMenu contextMenu = new ContextMenu();
         MenuItem menuItemSearchText = new MenuItem("Поиск");
-        menuItemSearchText.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent e) {
+        menuItemSearchText.setOnAction(e -> {
             SrtFile selectedSrtFile = tbvTable.getSelectionModel().getSelectedItem();
-            searchText(selectedSrtFile.getOrigText());
+            SearchTextClass searchTextClass = new SearchTextClass();
+            ArrayList<Integer> arrayList = searchTextClass.searchTextExt(selectedSrtFile.getOrigText(),textAreaOrig.getText());
+            if (arrayList.size()!=0) {
+                textAreaOrig.requestFocus();
+                textAreaOrig.positionCaret(arrayList.get(0));
+                textAreaOrig.selectPositionCaret(arrayList.get(1));
             }
         });
         MenuItem menuItemSelectionText = new MenuItem("Подбор текста");
-        menuItemSelectionText.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent e) {
-                MsgBox("Заглушка");
-            }
-        });
+        menuItemSelectionText.setOnAction(e -> MsgBox("Заглушка"));
         contextMenu.getItems().addAll(menuItemSearchText,menuItemSelectionText);
         tbvTable.setContextMenu(contextMenu);
     }
@@ -303,72 +304,18 @@ public class MainController {
 
     //Тестовая функция
     public void actionTemp(ActionEvent actionEvent) {
-        searchTextExt();
-    }
 
-    //Поиск текста, игнорируя спецсимволы, лишние пробелы и т.п.
-    private void searchTextExt(){
-        String searchString = "architecture. The odd superstitions";
-        String basicText = textAreaOrig.getText();
-        String[] searchStringMassive = new String[searchString.split(" ").length];
-        int k =0;
-        for (String retval : searchString.split(" ")) {
-            searchStringMassive[k]=retval;
-            k=k+1;
-        }
-        int startIndex = basicText.indexOf(searchStringMassive[0]);
-        int nextChar = startIndex + searchStringMassive[0].length();
-        for(int z = 1;z<searchStringMassive.length;z++){
-
-            char buf[] = new char[searchStringMassive[z].length()];
-            searchStringMassive[z].getChars(0, searchStringMassive[1].length(), buf, 0);
-
-            boolean charStatus = true;
-            char chr;
-            int bufCount = 0;
-            while (charStatus){
-                chr = basicText.charAt(nextChar);
-                switch (chr){
-                    case ' ':
-                        nextChar += 1;
-                        break;
-                    case '\n':
-                        nextChar += 1;
-                        break;
-                    default:
-                        if(chr==buf[bufCount]){
-                            nextChar += 1;
-                            bufCount +=1;
-                            System.out.println("Верно " +chr);
-                            if (bufCount==buf.length){
-                                charStatus = false;
-                            }
-                        }else{
-                            charStatus = false;
-                            System.out.println("Ложь_chr " +chr);
-                            System.out.println("Ложь_buf " +buf[bufCount]);
-
-                        }
-                }
-            }
-
-        }
     }
 
     public void actionSearch(KeyEvent keyEvent) {
         if(keyEvent.getCode().equals(KeyCode.ENTER)){
-            searchText(txtSearch.getText());
-        }
-
-    }
-
-    private void searchText(String srhText){
-        int index = textAreaOrig.getText().indexOf(srhText);
-        if (index!=-1) {
-            textAreaOrig.requestFocus();
-            textAreaOrig.positionCaret(index);
-            int lenght = srhText.length();
-            textAreaOrig.selectPositionCaret(index + lenght);
+            SearchTextClass searchTextClass = new SearchTextClass();
+            ArrayList<Integer> arrayList = searchTextClass.searchTextExt(txtSearch.getText(),textAreaOrig.getText());
+            if (arrayList.size()!=0) {
+                textAreaOrig.requestFocus();
+                textAreaOrig.positionCaret(arrayList.get(0));
+                textAreaOrig.selectPositionCaret(arrayList.get(1));
+            }
         }
     }
 
