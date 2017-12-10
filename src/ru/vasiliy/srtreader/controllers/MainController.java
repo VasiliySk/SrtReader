@@ -190,9 +190,31 @@ public class MainController {
             }
         });
         MenuItem menuItemSelectionText = new MenuItem("Подбор текста");
-        menuItemSelectionText.setOnAction(e -> MsgBox("Заглушка"));
+        menuItemSelectionText.setOnAction(e -> {
+            selectionOfTtext();
+        });
         contextMenu.getItems().addAll(menuItemSearchText,menuItemSelectionText);
         tbvTable.setContextMenu(contextMenu);
+    }
+
+    //Подбор строки в случае, если в строке выше и строке ниже есть текст
+    private void selectionOfTtext() {
+        SrtFile selectedSrtFile = tbvTable.getSelectionModel().getSelectedItem();
+        int stringCount = Integer.valueOf(selectedSrtFile.getCount());
+        SrtFile upSelectedSrtFile = collectionSrtFiles.getSrtList().get(stringCount-2);
+        SrtFile downSelectedSrtFile = collectionSrtFiles.getSrtList().get(stringCount);
+        if ((upSelectedSrtFile.getOrigText().equals("QWERTY"))||(downSelectedSrtFile.getOrigText().equals("QWERTY"))){
+            MsgBox("Не найдено.");
+        }else{
+            SearchTextClass searchTextClass = new SearchTextClass();
+            ArrayList<Integer> upArrayList = searchTextClass.searchTextExt(upSelectedSrtFile.getOrigText(), textAreaOrig.getText());
+            ArrayList<Integer> downArrayList = searchTextClass.searchTextExt(downSelectedSrtFile.getOrigText(), textAreaOrig.getText());
+            selectedSrtFile.setOrigText(removeMoreSpaceAndLineBreak(textAreaOrig.getText(upArrayList.get(1), downArrayList.get(0)).trim()));
+            selectedSrtFile.setCheckText("!edited");
+            textAreaOrig.requestFocus();
+            textAreaOrig.positionCaret(upArrayList.get(1));
+            textAreaOrig.selectPositionCaret(downArrayList.get(0));
+        }
     }
 
     public void actionClose(ActionEvent actionEvent) {
@@ -287,12 +309,14 @@ public class MainController {
     }
 
     private void reconciliationTexts(){
+        SearchTextClass searchTextClass=new SearchTextClass();
         for(int i=0;i<collectionSrtFiles.getSrtList().size();i++) {
             SrtFile tmpSrtFile = new SrtFile();
             tmpSrtFile.setCount(collectionSrtFiles.getSrtList().get(i).getCount());
             tmpSrtFile.setTimeLine(collectionSrtFiles.getSrtList().get(i).getTimeLine());
             tmpSrtFile.setSrtText(collectionSrtFiles.getSrtList().get(i).getSrtText());
-            tmpSrtFile.setOrigText(originalTextClass.checkText(i));
+            //tmpSrtFile.setOrigText(originalTextClass.checkText(i));
+            tmpSrtFile.setOrigText(searchTextClass.checkSrtText(collectionSrtFiles.getSrtList().get(i).getSrtText(),textAreaOrig.getText()));
             if (tmpSrtFile.getOrigText().equals("QWERTY")) {
                 tmpSrtFile.setCheckText("!false");
             }else {
@@ -450,17 +474,11 @@ public class MainController {
 
     //Тестовая функция
     public void actionTemp(ActionEvent actionEvent) {
-        SrtFile selectedSrtFile = tbvTable.getSelectionModel().getSelectedItem();
-        int stringCount = Integer.valueOf(selectedSrtFile.getCount());
-        SrtFile upSelectedSrtFile = collectionSrtFiles.getSrtList().get(stringCount-2);
-        SearchTextClass searchTextClass = new SearchTextClass();
-        ArrayList<Integer> upArrayList = searchTextClass.searchTextExt(upSelectedSrtFile.getOrigText(),textAreaOrig.getText());
-        SrtFile downSelectedSrtFile = collectionSrtFiles.getSrtList().get(stringCount);
-        ArrayList<Integer> downArrayList = searchTextClass.searchTextExt(downSelectedSrtFile.getOrigText(),textAreaOrig.getText());
-        selectedSrtFile.setOrigText(removeMoreSpaceAndLineBreak(textAreaOrig.getText(upArrayList.get(1),downArrayList.get(0)).trim()));
-        textAreaOrig.requestFocus();
-        textAreaOrig.positionCaret(upArrayList.get(1));
-        textAreaOrig.selectPositionCaret(downArrayList.get(0));
+
+        String searchString = "I get hold of you I'll she did not";
+        SearchTextClass searchTextClass=new SearchTextClass();
+        System.out.println(searchTextClass.checkSrtText(searchString,textAreaOrig.getText()));
+
     }
 
     private String removeMoreSpaceAndLineBreak(String result){
@@ -472,7 +490,6 @@ public class MainController {
             String replace = result.replace("\n", "");
             result=replace;
         }
-
         return result;
     }
 }
