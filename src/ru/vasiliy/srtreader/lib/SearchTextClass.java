@@ -11,7 +11,6 @@ public class SearchTextClass {
         int k =0;
         for (String retval : searchString.split(" ")) {
             searchStringMassive[k]=retval;
-
             k=k+1;
         }
         if (searchStringMassive.length==1){
@@ -40,9 +39,10 @@ public class SearchTextClass {
                 searchStringMassive[z].getChars(0, searchStringMassive[z].length(), buf, 0);
 
                 boolean charStatus = true;
+                boolean wordStatus = true;
                 char chr;
                 int bufCount = 0;
-                while (charStatus) {
+                while (charStatus&&wordStatus) {
                     chr = basicText.charAt(nextChar);
                     switch (chr) {
                         case ' ':
@@ -51,7 +51,7 @@ public class SearchTextClass {
                             lenght += 1;
                             break;
                         default:
-                            if (chr == buf[bufCount]) {
+                             if (String.valueOf(chr).equalsIgnoreCase( String.valueOf(buf[bufCount]))) {
                                 nextChar += 1;
                                 bufCount += 1;
                                 lenght += 1;
@@ -69,7 +69,7 @@ public class SearchTextClass {
                                     }
                                 }
                                 if (bufCount == buf.length) {
-                                    charStatus = false;
+                                    wordStatus = false;
                                     indexCountSearch=startIndex+1;
                                 }
                             } else {

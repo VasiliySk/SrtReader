@@ -200,22 +200,25 @@ public class MainController {
     //Подбор строки в случае, если в строке выше и строке ниже есть текст
     private void selectionOfTtext() {
         SrtFile selectedSrtFile = tbvTable.getSelectionModel().getSelectedItem();
-        int stringCount = Integer.valueOf(selectedSrtFile.getCount());
-        SrtFile upSelectedSrtFile = collectionSrtFiles.getSrtList().get(stringCount-2);
-        SrtFile downSelectedSrtFile = collectionSrtFiles.getSrtList().get(stringCount);
-        if ((upSelectedSrtFile.getOrigText().equals("QWERTY"))||(downSelectedSrtFile.getOrigText().equals("QWERTY"))){
-            MsgBox("Не найдено.");
-        }else{
-            SearchTextClass searchTextClass = new SearchTextClass();
-            ArrayList<Integer> upArrayList = searchTextClass.searchTextExt(upSelectedSrtFile.getOrigText(), textAreaOrig.getText());
-            ArrayList<Integer> downArrayList = searchTextClass.searchTextExt(downSelectedSrtFile.getOrigText(), textAreaOrig.getText());
-            selectedSrtFile.setOrigText(removeMoreSpaceAndLineBreak(textAreaOrig.getText(upArrayList.get(1), downArrayList.get(0)).trim()));
-            selectedSrtFile.setCheckText("!edited");
-            textAreaOrig.requestFocus();
-            textAreaOrig.positionCaret(upArrayList.get(1));
-            textAreaOrig.selectPositionCaret(downArrayList.get(0));
+        if(selectedSrtFile.getOrigText().equals("QWERTY")) {
+            int stringCount = Integer.valueOf(selectedSrtFile.getCount());
+            SrtFile upSelectedSrtFile = collectionSrtFiles.getSrtList().get(stringCount - 2);
+            SrtFile downSelectedSrtFile = collectionSrtFiles.getSrtList().get(stringCount);
+            if ((upSelectedSrtFile.getOrigText().equals("QWERTY")) || (downSelectedSrtFile.getOrigText().equals("QWERTY"))) {
+                MsgBox("Не найдено.");
+            } else {
+                SearchTextClass searchTextClass = new SearchTextClass();
+                ArrayList<Integer> upArrayList = searchTextClass.searchTextExt(upSelectedSrtFile.getOrigText(), textAreaOrig.getText());
+                ArrayList<Integer> downArrayList = searchTextClass.searchTextExt(downSelectedSrtFile.getOrigText(), textAreaOrig.getText());
+                selectedSrtFile.setOrigText(removeMoreSpaceAndLineBreak(textAreaOrig.getText(upArrayList.get(1), downArrayList.get(0)).trim()));
+                selectedSrtFile.setCheckText("!edited");
+                textAreaOrig.requestFocus();
+                textAreaOrig.positionCaret(upArrayList.get(1));
+                textAreaOrig.selectPositionCaret(downArrayList.get(0));
+            }
         }
     }
+
 
     public void actionClose(ActionEvent actionEvent) {
         Stage stage = (Stage) menuFile.getScene().getWindow();
@@ -475,7 +478,7 @@ public class MainController {
     //Тестовая функция
     public void actionTemp(ActionEvent actionEvent) {
 
-        String searchString = "I get hold of you I'll she did not";
+        String searchString = "in. THE AUTHOR. HARTFORD, 1876.  Chapter I";
         SearchTextClass searchTextClass=new SearchTextClass();
         System.out.println(searchTextClass.checkSrtText(searchString,textAreaOrig.getText()));
 
