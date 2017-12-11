@@ -2,8 +2,6 @@ package ru.vasiliy.srtreader.lib;
 
 import java.util.ArrayList;
 
-import static ru.vasiliy.srtreader.lib.MsgBoxClass.MsgBox;
-
 public class SearchTextClass {
 
     //Поиск текста, игнорируя спецсимволы, лишние пробелы и т.п.
