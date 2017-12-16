@@ -404,7 +404,12 @@ public class MainController {
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Файл проекта", "*.psrt");
         fileChooser.getExtensionFilters().add(extFilter);
         File file = fileChooser.showSaveDialog(parentWindow);
-        projectSrt.setProjectFile(file);
+        if(!file.toString().endsWith(".psrt")){
+            File fileExt = new File(file.getAbsolutePath()+".psrt");
+            projectSrt.setProjectFile(fileExt);
+        }else {
+            projectSrt.setProjectFile(file);
+        }
         if (file!=null){
             projectSrt.saveProjectFile();
             projectSrt.saveOriginalTextFile(textAreaOrig.getText());
@@ -425,7 +430,12 @@ public class MainController {
         fileChooser.getExtensionFilters().add(extFilter);
         File file = fileChooser.showSaveDialog(parentWindow);
         if (file!=null) {
-            projectSrt.saveSrtFile(file, collectionSrtFiles);
+            if (!file.toString().endsWith(".srt")){
+                File fileExt = new File(file.getAbsolutePath()+".srt");
+                projectSrt.saveSrtFile(fileExt, collectionSrtFiles);
+            }else{
+                projectSrt.saveSrtFile(file, collectionSrtFiles);
+            }
             lblStatusText.setText("Файл субтитров сохранен.");
         }
     }

@@ -45,13 +45,13 @@ public class ProjectSrt {
         try {
             FileWriter fileWriter = new FileWriter(projectFile);
             BufferedWriter buffer = new BufferedWriter(fileWriter);
-            String name = fileName(projectFile.getAbsolutePath());
+            String name = fileName(projectFile.getCanonicalPath());
             buffer.write( name+".ptxt") ;
             buffer.newLine();
             buffer.write( name+".esrt") ;
             buffer.close();
-            originalTextFile = new File(fileName(projectFile.getAbsolutePath())+".ptxt");
-            extendedSrtFile = new File(fileName(projectFile.getAbsolutePath())+".esrt");
+            originalTextFile = new File(name+".ptxt");
+            extendedSrtFile = new File(name+".esrt");
 
         } catch (IOException e) {
             e.printStackTrace();
