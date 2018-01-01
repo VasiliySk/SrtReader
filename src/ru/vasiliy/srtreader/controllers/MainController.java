@@ -42,8 +42,6 @@ public class MainController {
     @FXML
     private MenuItem menuTxtOpen;//Меню "Открыть TXT файл"
     @FXML
-    private VBox vBox;
-    @FXML
     private MenuItem menuSaveProjectAs;//Меню "Сохранить проект как"
     @FXML
     private MenuItem menuSaveProject;//Меню "Сохранить проект"
@@ -68,7 +66,9 @@ public class MainController {
     @FXML
     private TableColumn<SrtFile,String> tbcOrigText;
     @FXML
-    public TableColumn <SrtFile,String>tbcCheckText;
+    private TableColumn <SrtFile,String>tbcCheckText;
+    @FXML
+    private TableColumn <SrtFile,String>tbcMP3Play; //Столбец таблицы для кнопки проигрывания музыки
 
     private CollectionSrtFiles collectionSrtFiles = new CollectionSrtFiles();
 
@@ -81,6 +81,8 @@ public class MainController {
     private String[] originalText;
     private String[] editText;
 
+    public static File mp3File;
+
     @FXML
     private MenuBar menuFile;
 
@@ -89,7 +91,7 @@ public class MainController {
     FilteredList<SrtFile> filteredData = new FilteredList<>(collectionSrtFiles.getSrtList(), p -> true);
     SortedList<SrtFile> sortedData = new SortedList<>(filteredData);
 
-
+    // Инициализация проекта
     @FXML
     private void initialize(){
 
@@ -98,6 +100,7 @@ public class MainController {
         tbcSrtText.setCellValueFactory(new PropertyValueFactory<SrtFile,String>("srtText"));
         tbcOrigText.setCellValueFactory(new PropertyValueFactory<SrtFile,String>("origText"));
         tbcCheckText.setCellValueFactory(new PropertyValueFactory<SrtFile,String>("checkText"));
+        tbcMP3Play.setCellValueFactory(new PropertyValueFactory<SrtFile,String>("button"));
 
         collectionSrtFiles.getSrtList().addListener((ListChangeListener) (c) ->{
             updateCountList();
@@ -219,7 +222,7 @@ public class MainController {
         }
     }
 
-
+    //Закрываем программу
     public void actionClose(ActionEvent actionEvent) {
         Stage stage = (Stage) menuFile.getScene().getWindow();
         stage.close();
@@ -286,6 +289,7 @@ public class MainController {
         }
     }
 
+    // Открываем текстовый файл с оригинальным текстом
     public void openTxtFile(ActionEvent actionEvent) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Txt File");
@@ -311,6 +315,7 @@ public class MainController {
         lblStatusText.setText("Оригинальный текст загружен.");
     }
 
+    // Подбираем оригинальный текст
     private void reconciliationTexts(){
         SearchTextClass searchTextClass=new SearchTextClass();
         for(int i=0;i<collectionSrtFiles.getSrtList().size();i++) {
@@ -318,6 +323,7 @@ public class MainController {
             tmpSrtFile.setCount(collectionSrtFiles.getSrtList().get(i).getCount());
             tmpSrtFile.setTimeLine(collectionSrtFiles.getSrtList().get(i).getTimeLine());
             tmpSrtFile.setSrtText(collectionSrtFiles.getSrtList().get(i).getSrtText());
+            tmpSrtFile.setButton(collectionSrtFiles.getSrtList().get(i).getButton());
             //tmpSrtFile.setOrigText(originalTextClass.checkText(i));
             tmpSrtFile.setOrigText(searchTextClass.checkSrtText(collectionSrtFiles.getSrtList().get(i).getSrtText(),textAreaOrig.getText()));
             if (tmpSrtFile.getOrigText().equals("QWERTY")) {
@@ -329,6 +335,7 @@ public class MainController {
         }
     }
 
+    //Ищем текст в текстовом поле и выделяем его
     public void actionSearch(KeyEvent keyEvent) {
         if(keyEvent.getCode().equals(KeyCode.ENTER)){
             SearchTextClass searchTextClass = new SearchTextClass();
@@ -418,6 +425,7 @@ public class MainController {
         }
     }
 
+    //Сохрвняем SRT файл
     public void saveSrtFile(ActionEvent actionEvent) {
         FileChooser fileChooser = new FileChooser();
         Window parentWindow = menuFile.getScene().getWindow();
@@ -440,10 +448,12 @@ public class MainController {
         }
     }
 
+    //Обновляем счетчик отображаемых строк
     private void updateCountList(){
         lblStatusText.setText("Количество записей в таблице: "+sortedData.size());
     }
 
+    //Ищем следующую строку без подобранного текста
     public void actionDown(ActionEvent actionEvent) {
         int selectedSrtCount=tbvTable.getSelectionModel().getSelectedIndex();
         if (selectedSrtCount != -1) {
@@ -469,6 +479,7 @@ public class MainController {
         }
     }
 
+    //Ищем предыдущую строку без подобранного текста
     public void actionUp(ActionEvent actionEvent) {
         int selectedSrtCount=tbvTable.getSelectionModel().getSelectedIndex();
         if (selectedSrtCount != -1) {
@@ -484,7 +495,6 @@ public class MainController {
         }
     }
 
-
     //Тестовая функция
     public void actionTemp(ActionEvent actionEvent) {
 
@@ -494,6 +504,7 @@ public class MainController {
 
     }
 
+    //Удаляем лищние пробелы и переносы строк
     private String removeMoreSpaceAndLineBreak(String result){
         while(result.contains("  ")) {
             String replace = result.replace("  ", " ");
@@ -504,5 +515,22 @@ public class MainController {
             result=replace;
         }
         return result;
+    }
+
+    //Открываем MP3 файл
+    public void openMP3File(ActionEvent actionEvent) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Открыть MP3 файл");
+        //Проверяем существует ли папка по умолчанию
+        Path path = Paths.get("D:\\Java\\Audiobooks");
+        if (Files.exists(path)) {
+            fileChooser.setInitialDirectory(new File("D:\\Java\\Audiobooks"));
+        }
+        Stage stage = (Stage) menuFile.getScene().getWindow();
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("MP3 файл", "*.mp3") );
+        mp3File = fileChooser.showOpenDialog(stage);
+        if(mp3File!=null) {
+            lblStatusText.setText("MP3 файл загружен.");
+        }
     }
 }
