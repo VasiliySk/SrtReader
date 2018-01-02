@@ -15,6 +15,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.*;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -35,6 +37,8 @@ import java.util.ArrayList;
 import static ru.vasiliy.srtreader.lib.MsgBoxClass.MsgBox;
 
 public class MainController {
+    @FXML
+    private MenuItem menuMP3Open;//Меню "Открыть MP3 файл"
     @FXML
     private Label lblStatusText; //Текстовая строка статуса
     @FXML
@@ -70,7 +74,7 @@ public class MainController {
     @FXML
     private TableColumn <SrtFile,String>tbcMP3Play; //Столбец таблицы для кнопки проигрывания музыки
 
-    private CollectionSrtFiles collectionSrtFiles = new CollectionSrtFiles();
+    public static CollectionSrtFiles collectionSrtFiles = new CollectionSrtFiles();
 
     private OriginalTextClass originalTextClass = new OriginalTextClass();
 
@@ -81,15 +85,19 @@ public class MainController {
     private String[] originalText;
     private String[] editText;
 
-    public static File mp3File;
+    private boolean openSrtFile = false;
+    private boolean openMP3File = false;
+
+    public static MediaPlayer playerMP3;
+    private File mp3File;
 
     @FXML
     private MenuBar menuFile;
 
     private ObservableList<String> statusField;
 
-    FilteredList<SrtFile> filteredData = new FilteredList<>(collectionSrtFiles.getSrtList(), p -> true);
-    SortedList<SrtFile> sortedData = new SortedList<>(filteredData);
+    private FilteredList<SrtFile> filteredData = new FilteredList<>(collectionSrtFiles.getSrtList(), p -> true);
+    private SortedList<SrtFile> sortedData = new SortedList<>(filteredData);
 
     // Инициализация проекта
     @FXML
@@ -178,6 +186,7 @@ public class MainController {
         menuSaveProject.setAccelerator(KeyCombination.keyCombination("shortcut+S"));
         menuOpen.setAccelerator(KeyCombination.keyCombination("shortcut+R"));
         menuTxtOpen.setAccelerator(KeyCombination.keyCombination("shortcut+T"));
+        menuMP3Open.setAccelerator(KeyCombination.keyCombination("shortcut+M"));
 
         //Меню по правой кнопке
         ContextMenu contextMenu = new ContextMenu();
@@ -283,8 +292,11 @@ public class MainController {
                 }
             }
             reconciliationTexts();
-            menuSaveProject.setDisable(false);
-            menuSaveProjectAs.setDisable(false);
+            openSrtFile = true;
+            if (openSrtFile&&openMP3File) {
+                menuSaveProject.setDisable(false);
+                menuSaveProjectAs.setDisable(false);
+            }
             lblStatusText.setText("Файл субтитров загружен.");
         }
     }
@@ -366,16 +378,24 @@ public class MainController {
             try {
                 FileReader fr = new FileReader(file);
                 BufferedReader reader = new BufferedReader(fr);
+
                 String line = reader.readLine();
                 projectSrt.setOriginalTextFile(new File (line));
                 textAreaOrig.setText(projectSrt.openOriginalTextFile(line));
+
                 line = reader.readLine();
                 projectSrt.setExtendedSrtFile(new File(line));
                 projectSrt.openExtendedSrtFile(line, collectionSrtFiles);
+
+                line = reader.readLine();
+                mp3File = new File(line);
+                playerMP3= new MediaPlayer(new Media(mp3File.toURI().toString()));
+
                 menuSaveProject.setDisable(false);
                 menuSaveProjectAs.setDisable(false);
                 menuTxtOpen.setDisable(true);
                 menuOpen.setDisable(true);
+                menuMP3Open.setDisable(true);
                 lblStatusText.setText("Проект загружен.");
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -421,6 +441,7 @@ public class MainController {
             projectSrt.saveProjectFile();
             projectSrt.saveOriginalTextFile(textAreaOrig.getText());
             projectSrt.saveExtendedSrtFile(collectionSrtFiles.getSrtList());
+            projectSrt.saveMP3File(mp3File);
             lblStatusText.setText("Проект сохранен.");
         }
     }
@@ -530,6 +551,12 @@ public class MainController {
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("MP3 файл", "*.mp3") );
         mp3File = fileChooser.showOpenDialog(stage);
         if(mp3File!=null) {
+            playerMP3= new MediaPlayer(new Media(mp3File.toURI().toString()));
+            openMP3File = true;
+            if (openSrtFile&&openMP3File) {
+                menuSaveProject.setDisable(false);
+                menuSaveProjectAs.setDisable(false);
+            }
             lblStatusText.setText("MP3 файл загружен.");
         }
     }

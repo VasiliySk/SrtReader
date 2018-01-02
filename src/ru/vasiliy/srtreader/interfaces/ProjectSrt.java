@@ -4,11 +4,16 @@ import javafx.collections.ObservableList;
 import ru.vasiliy.srtreader.objects.SrtFile;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+import static java.nio.file.StandardCopyOption.*;
 
 public class ProjectSrt {
     private File projectFile;
     private File originalTextFile;
     private File extendedSrtFile;
+    private File MP3SaveFile;
 
     public ProjectSrt(File projectFile, File originalTextFile, File extendedSrtFile) {
         this.projectFile = projectFile;
@@ -49,9 +54,12 @@ public class ProjectSrt {
             buffer.write( name+".ptxt") ;
             buffer.newLine();
             buffer.write( name+".esrt") ;
+            buffer.newLine();
+            buffer.write( name+".mp3") ;
             buffer.close();
             originalTextFile = new File(name+".ptxt");
             extendedSrtFile = new File(name+".esrt");
+            MP3SaveFile = new File(name+".mp3");
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -213,6 +221,15 @@ public class ProjectSrt {
             e.printStackTrace();
         }
 
+    }
+
+    public void saveMP3File(File MP3File){
+
+        try {
+            Files.copy(MP3File.toPath(),MP3SaveFile.toPath(),REPLACE_EXISTING);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
 

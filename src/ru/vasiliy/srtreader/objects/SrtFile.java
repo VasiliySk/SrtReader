@@ -4,15 +4,12 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
-import javazoom.jl.decoder.JavaLayerException;
-import javazoom.jl.player.Player;
-import javazoom.jl.player.advanced.AdvancedPlayer;
+import javafx.util.Duration;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.util.ArrayList;
 
-import static ru.vasiliy.srtreader.controllers.MainController.mp3File;
+import static ru.vasiliy.srtreader.controllers.MainController.collectionSrtFiles;
+import static ru.vasiliy.srtreader.controllers.MainController.playerMP3;
 
 public class SrtFile {
 
@@ -25,27 +22,16 @@ public class SrtFile {
         this.origText=new SimpleStringProperty(origText);
         this.checkText=new SimpleStringProperty(checkText);
         this.button = new Button(">");
-        this.button.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override public void handle(MouseEvent mouseEvent) {
-                if (mp3File!=null) {
-                    try {
-                        try {
-                            FileInputStream mp3FileStream = new FileInputStream(mp3File);
-                            AdvancedPlayer player = new AdvancedPlayer(mp3FileStream);
-                            //An MP3 frame always represents 26ms of audio, regardless of the bitrate.  1/0.026 = 38.46 frames per second.
-                            player.play(249,435);
-                            try {
-                                mp3FileStream.close();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
-                        }
-                    } catch (JavaLayerException e) {
-                        e.printStackTrace();
-                    }
+        this.button.setOnMousePressed(mouseEvent -> {
+            if (playerMP3!=null) {
+                playerMP3.setStartTime(Duration.millis(StartTime(this.timeLine.getValue())));
+                if(collectionSrtFiles.getSrtList().size()>Integer.valueOf(this.count.getValue())) {
+                    playerMP3.setStopTime(Duration.millis(StartTime(collectionSrtFiles.getSrtList().get(Integer.valueOf(this.count.getValue())).getTimeLine())));
+                }else{
+                    playerMP3.setStopTime(Duration.millis(playerMP3.getTotalDuration().toMillis()));
                 }
+                playerMP3.play();
+                playerMP3.setOnEndOfMedia(()-> playerMP3.stop());
             }
         });
 
@@ -122,5 +108,19 @@ public class SrtFile {
     public SimpleStringProperty origTextProperty(){return origText;}
 
     public SimpleStringProperty checkTextProperty(){return checkText;}
+
+    //Определяем время начала воспроизведения аудио фрагмента
+    private int StartTime (String timeLine){
+        int startTime;
+        String[] massiveTimeLine=timeLine.split(" --> ");
+        String[] massiveTime = massiveTimeLine[0].split(":");
+        int startHour = Integer.valueOf(massiveTime[0])*60*60*1000;
+        int startMinutes = Integer.valueOf(massiveTime[1])*60*1000;
+        String[] massiveSecondAndMills = massiveTime[2].split(",");
+        int startSeconds = Integer.valueOf(massiveSecondAndMills[0])*1000;
+        int startMills = Integer.valueOf(massiveSecondAndMills[1]);
+        startTime = startHour+startMinutes+startSeconds+startMills;
+        return startTime;
+    }
 
 }
