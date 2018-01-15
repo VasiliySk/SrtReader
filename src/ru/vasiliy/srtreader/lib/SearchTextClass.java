@@ -189,12 +189,12 @@ public class SearchTextClass {
     }
 
     private String removeMoreSpaceAndLineBreak(String result){
-        while(result.contains("  ")) {
-            String replace = result.replace("  ", " ");
-            result=replace;
-        }
         while(result.contains("\n")) {
             String replace = result.replace("\n", "");
+            result=replace;
+        }
+        while(result.contains("  ")) {
+            String replace = result.replace("  ", " ");
             result=replace;
         }
         return result;

@@ -5,11 +5,13 @@ import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Duration;
+import ru.vasiliy.srtreader.lib.MsgBoxClass;
 
 import java.util.ArrayList;
 
 import static ru.vasiliy.srtreader.controllers.MainController.collectionSrtFiles;
 import static ru.vasiliy.srtreader.controllers.MainController.playerMP3;
+import static ru.vasiliy.srtreader.lib.MsgBoxClass.MsgBox;
 
 public class SrtFile {
 
@@ -28,10 +30,12 @@ public class SrtFile {
                 if(collectionSrtFiles.getSrtList().size()>Integer.valueOf(this.count.getValue())) {
                     playerMP3.setStopTime(Duration.millis(StartTime(collectionSrtFiles.getSrtList().get(Integer.valueOf(this.count.getValue())).getTimeLine())));
                 }else{
-                    playerMP3.setStopTime(Duration.millis(playerMP3.getTotalDuration().toMillis()));
+                    playerMP3.setStopTime(Duration.millis(StopTime(this.timeLine.getValue())));
                 }
                 playerMP3.play();
                 playerMP3.setOnEndOfMedia(()-> playerMP3.stop());
+            }else {
+                MsgBox("Загрузите MP3 файл.");
             }
         });
 
@@ -114,6 +118,20 @@ public class SrtFile {
         int startTime;
         String[] massiveTimeLine=timeLine.split(" --> ");
         String[] massiveTime = massiveTimeLine[0].split(":");
+        int startHour = Integer.valueOf(massiveTime[0])*60*60*1000;
+        int startMinutes = Integer.valueOf(massiveTime[1])*60*1000;
+        String[] massiveSecondAndMills = massiveTime[2].split(",");
+        int startSeconds = Integer.valueOf(massiveSecondAndMills[0])*1000;
+        int startMills = Integer.valueOf(massiveSecondAndMills[1]);
+        startTime = startHour+startMinutes+startSeconds+startMills;
+        return startTime;
+    }
+
+    //Определяем время окончания воспроизведения аудио фрагмента
+    private int StopTime (String timeLine){
+        int startTime;
+        String[] massiveTimeLine=timeLine.split(" --> ");
+        String[] massiveTime = massiveTimeLine[1].split(":");
         int startHour = Integer.valueOf(massiveTime[0])*60*60*1000;
         int startMinutes = Integer.valueOf(massiveTime[1])*60*1000;
         String[] massiveSecondAndMills = massiveTime[2].split(",");

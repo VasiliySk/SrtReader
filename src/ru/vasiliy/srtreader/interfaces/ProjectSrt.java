@@ -46,6 +46,7 @@ public class ProjectSrt {
         this.extendedSrtFile = extendedSrtFile;
     }
 
+    //Сохраняем файл проекта
     public void saveProjectFile(){
         try {
             FileWriter fileWriter = new FileWriter(projectFile);
@@ -60,13 +61,12 @@ public class ProjectSrt {
             originalTextFile = new File(name+".ptxt");
             extendedSrtFile = new File(name+".esrt");
             MP3SaveFile = new File(name+".mp3");
-
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
+    //Сохраняем файл с оригинальным текстом
     public void saveOriginalTextFile(String originalText){
         try {
             FileWriter fileWriter = new FileWriter(originalTextFile);
@@ -78,6 +78,7 @@ public class ProjectSrt {
         }
     }
 
+    //Сохраняем расширенный SRT файл
     public void saveExtendedSrtFile(ObservableList<SrtFile> srtList){
         try {
             FileWriter fileWriter = new FileWriter(extendedSrtFile);
@@ -112,6 +113,7 @@ public class ProjectSrt {
         }
     }
 
+    //Определяем имя файла без расширения
     private String fileName (String FileNameWithExtension){
         int pos = FileNameWithExtension.lastIndexOf(".");
         if (pos > 0) {
@@ -120,6 +122,7 @@ public class ProjectSrt {
         return "";
     }
 
+    //Открываем файл с оригинальным текстом
     public String openOriginalTextFile(String fileAdress){
         File file = new File(fileAdress);
         StringBuilder stringBuilder = new StringBuilder();
@@ -135,7 +138,6 @@ public class ProjectSrt {
                     lineWithLineBreak = line + "\n";
                     stringBuilder.append(lineWithLineBreak);
                 }
-
             }
             reader.close();
             return stringBuilder.toString();
@@ -148,6 +150,7 @@ public class ProjectSrt {
         }
     }
 
+    //Открываем расширенный SRT файл
     public void openExtendedSrtFile(String fileAdress, CollectionSrtFiles collectionSrtFiles){
         String line1="";
         String line2="";
@@ -201,6 +204,7 @@ public class ProjectSrt {
         }
     }
 
+    //Сохраняем SRT файл
     public void saveSrtFile(File file,CollectionSrtFiles collectionSrtFiles){
 
         try {
@@ -223,8 +227,8 @@ public class ProjectSrt {
 
     }
 
+    //Сохраняем MP3 файл
     public void saveMP3File(File MP3File){
-
         try {
             Files.copy(MP3File.toPath(),MP3SaveFile.toPath(),REPLACE_EXISTING);
         } catch (IOException e) {

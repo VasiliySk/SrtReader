@@ -38,6 +38,8 @@ import static ru.vasiliy.srtreader.lib.MsgBoxClass.MsgBox;
 
 public class MainController {
     @FXML
+    private VBox vBoxField;
+    @FXML
     private MenuItem menuMP3Open;//Меню "Открыть MP3 файл"
     @FXML
     private Label lblStatusText; //Текстовая строка статуса
@@ -207,6 +209,15 @@ public class MainController {
         });
         contextMenu.getItems().addAll(menuItemSearchText,menuItemSelectionText);
         tbvTable.setContextMenu(contextMenu);
+
+        //Удаляем лишние пробелы в вводимом тексте
+        tbcOrigText.setOnEditCommit(
+                (TableColumn.CellEditEvent<SrtFile, String> t) -> {
+                    TableView tempTable = (TableView)t.getTableView();
+                    SrtFile tempPerson = (SrtFile) tempTable.getItems().get(t.getTablePosition().getRow());
+                    tempPerson.setOrigText(removeMoreSpaceAndLineBreak(t.getNewValue()));
+                });
+
     }
 
     //Подбор строки в случае, если в строке выше и строке ниже есть текст
@@ -293,7 +304,7 @@ public class MainController {
             }
             reconciliationTexts();
             openSrtFile = true;
-            if (openSrtFile&&openMP3File) {
+            if (openMP3File) {
                 menuSaveProject.setDisable(false);
                 menuSaveProjectAs.setDisable(false);
             }
@@ -403,7 +414,6 @@ public class MainController {
                 e.printStackTrace();
             }
         }
-
     }
 
     //Сохраняем проект
@@ -553,7 +563,7 @@ public class MainController {
         if(mp3File!=null) {
             playerMP3= new MediaPlayer(new Media(mp3File.toURI().toString()));
             openMP3File = true;
-            if (openSrtFile&&openMP3File) {
+            if (openSrtFile) {
                 menuSaveProject.setDisable(false);
                 menuSaveProjectAs.setDisable(false);
             }
